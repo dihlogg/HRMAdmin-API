@@ -10,5 +10,6 @@ namespace AdminHRM.Server.Dtos
         public string Status { get; set; }
         public Guid? EmployeeId { get; set; }
         public Guid SubUnitId { get; set; }
+        public string SubUnitName { get; set; }
     }
 }

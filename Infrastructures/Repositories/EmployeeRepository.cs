@@ -11,6 +11,18 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     {
     }
 
+    public async Task<int> CountAsync()
+    {
+        return await _hrmDbContext.Employees.CountAsync();
+    }
+    public async Task<List<Employee>> GetPagedAsync(int page, int pageSize)
+    {
+        return await _hrmDbContext.Employees
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
     public async Task<List<EmployeeDto>> GetInCludeParentChild()
     {
         var query = _hrmDbContext.Employees
@@ -25,17 +37,78 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
                 JobTitle = s.JobTitle,
                 Status = s.Status,
                 SubUnitId = s.SubUnitId,
+                SubUnitName = s.SubUnits.SubName,
                 SupperVisor = new EmployeeParentChildDto()
                 {
                     Id = s.SupperEmployee.Id,
-                    FullName = s.SupperEmployee.FirstName + s.SupperEmployee.LastName
+                    FullName = s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName
                 },
                 EmployeeChildrens = s.Employees.Select(p => new EmployeeParentChildDto()
                 {
                     Id =p.Id,
-                    FullName = p.FirstName + p.LastName
+                    FullName = p.FirstName + " " + p.LastName
                 })
             })
             .ToListAsync();
+    }
+
+    public async Task<List<EmployeeDto>> SearchEmployeeDtosAsync(
+        string? employeeName = null,
+        string? status = null,
+        string? jobTitle = null,
+        string? supervisorName = null,
+        string? subName = null)
+    {
+        var query = _hrmDbContext.Employees
+        .Include(e => e.SubUnits)
+        .Include(e => e.SupperEmployee)
+        .AsQueryable();
+
+        if (!string.IsNullOrEmpty(employeeName))
+        {
+            query = query.Where(s => (s.FirstName + " " + s.LastName).Contains(employeeName));
+        }
+
+        if (!string.IsNullOrEmpty(status))
+        {
+            query = query.Where(s => s.Status == status);
+        }
+
+        if (!string.IsNullOrEmpty(jobTitle))
+        {
+            query = query.Where(s => s.JobTitle == jobTitle);
+        }
+
+        if (!string.IsNullOrEmpty(supervisorName))
+        {
+            query = query.Where(s => (s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName).Contains(supervisorName));
+        }
+
+        if (!string.IsNullOrEmpty(subName))
+        {
+            query = query.Where(s => s.SubUnits.SubName.Contains(subName));
+        }
+
+        return await query
+            .AsNoTracking()
+            .Select(s => new EmployeeDto()
+            {
+                Id = s.Id,
+                LastName = s.LastName,
+                FirstName = s.FirstName,
+                JobTitle = s.JobTitle,
+                Status = s.Status,
+                SubUnitId = s.SubUnitId,
+                SupperVisor = new EmployeeParentChildDto()
+                {
+                    Id = s.SupperEmployee.Id,
+                    FullName = s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName
+                },
+                EmployeeChildrens = s.Employees.Select(p => new EmployeeParentChildDto()
+                {
+                    Id = p.Id,
+                    FullName = p.FirstName + " " + p.LastName
+                })
+            }).ToListAsync();
     }
 }

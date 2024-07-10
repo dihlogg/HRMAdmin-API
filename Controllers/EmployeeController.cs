@@ -82,5 +82,31 @@ namespace AdminHRM.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("SearchEmployees")]
+        public async Task<IActionResult> SearchEmployees(
+            string? employeeName = null,
+            string? status = null,
+            string? jobTitle = null,
+            string? supervisorName = null,
+            string? subName = null)
+        {
+            try
+            {
+                var data = await _employeeService.SearchEmployeeDtosAsync(employeeName, status, jobTitle, supervisorName, subName);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetPagingRecord")]
+        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetEmployees(int page = 1, int pageSize = 10)
+        {
+            var pagedResult = await _employeeService.GetPagedEmployeesAsync(page, pageSize);
+            return Ok(pagedResult);
+        }
     }
 }
