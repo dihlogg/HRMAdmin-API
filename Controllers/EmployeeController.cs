@@ -85,15 +85,15 @@ namespace AdminHRM.Server.Controllers
 
         [HttpGet("SearchEmployees")]
         public async Task<IActionResult> SearchEmployees(
-            string? employeeName = null,
-            string? status = null,
-            string? jobTitle = null,
-            string? supervisorName = null,
-            string? subName = null)
+           string? employeeName = null,
+           string? status = null,
+           string? jobTitle = null,
+           string? supervisorName = null,
+           string? subName = null)
         {
             try
             {
-                var data = await _employeeService.SearchEmployeeDtosAsync(employeeName, status, jobTitle, supervisorName, subName);
+                var data = await _employeeService.SearchEmployeeDtosAsync(employeeName, supervisorName, status, jobTitle, subName);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -103,10 +103,10 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpGet("GetPagingRecord")]
-        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetEmployees(int page = 1, int pageSize = 10)
+        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees([FromQuery] int page, [FromQuery] int pageSize, [FromQuery] string sortField, [FromQuery] string sortOrder)
         {
-            var pagedResult = await _employeeService.GetPagedEmployeesAsync(page, pageSize);
-            return Ok(pagedResult);
+            var result = await _employeeService.GetPagedEmployeesAsync(page, pageSize, sortField, sortOrder);
+            return Ok(result);
         }
     }
 }

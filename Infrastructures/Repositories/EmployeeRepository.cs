@@ -2,6 +2,7 @@
 using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace AdminHRM.Server.Infrastructures;
 
@@ -15,12 +16,38 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     {
         return await _hrmDbContext.Employees.CountAsync();
     }
-    public async Task<List<Employee>> GetPagedAsync(int page, int pageSize)
+    public async Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string sortField, string sortOrder)
     {
-        return await _hrmDbContext.Employees
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+        var query = _hrmDbContext.Employees.AsQueryable();
+
+        if (!string.IsNullOrEmpty(sortField))
+        {
+            var sortOrderString = sortOrder.ToUpper() == "DESC" ? "descending" : "ascending";
+            query = query.OrderBy($"{sortField} {sortOrderString}");
+        }
+
+        return await query.Skip((page - 1) * pageSize).Take(pageSize)
+            .Select(s => new EmployeeDto()
+            {
+                Id = s.Id,
+                LastName = s.LastName,
+                FirstName = s.FirstName,
+                JobTitle = s.JobTitle,
+                Status = s.Status,
+                SubUnitId = s.SubUnitId,
+                SubUnitName = s.SubUnits.SubName,
+                SupperVisor = new EmployeeParentChildDto()
+                {
+                    Id = s.SupperEmployee.Id,
+                    FullName = s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName
+                },
+                EmployeeChildrens = s.Employees.Select(p => new EmployeeParentChildDto()
+                {
+                    Id = p.Id,
+                    FullName = p.FirstName + " " + p.LastName
+                }).ToList()
+            }).ToListAsync();
+
     }
 
     public async Task<List<EmployeeDto>> GetInCludeParentChild()
@@ -99,6 +126,7 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
                 JobTitle = s.JobTitle,
                 Status = s.Status,
                 SubUnitId = s.SubUnitId,
+                SubUnitName = s.SubUnits.SubName,
                 SupperVisor = new EmployeeParentChildDto()
                 {
                     Id = s.SupperEmployee.Id,
@@ -110,5 +138,10 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
                     FullName = p.FirstName + " " + p.LastName
                 })
             }).ToListAsync();
+    }
+
+    public IQueryable<Employee> Query()
+    {
+        return _hrmDbContext.Employees.AsQueryable();
     }
 }
