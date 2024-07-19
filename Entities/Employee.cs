@@ -1,4 +1,6 @@
-﻿namespace AdminHRM.Server.Entities
+﻿using AdminHRM.Server.Dtos;
+
+namespace AdminHRM.Server.Entities
 {
     public class Employee : BaseEntities
     {

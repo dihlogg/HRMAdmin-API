@@ -82,5 +82,42 @@ namespace AdminHRM.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("SearchEmployees")]
+        public async Task<IActionResult> SearchEmployees(
+           string? employeeName = null,
+           string? status = null,
+           string? jobTitle = null,
+           string? supervisorName = null,
+           string? subName = null)
+        {
+            try
+            {
+                var data = await _employeeService.SearchEmployeeDtosAsync(employeeName, supervisorName, status, jobTitle, subName);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetPagingRecord")]
+        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees([FromQuery] int page,
+            [FromQuery] int pageSize,
+            [FromQuery] string sortFields,
+            [FromQuery] string sortOrders)
+        {
+            var sortFieldArray = sortFields.Split(',');
+            var sortOrderArray = sortOrders.Split(',');
+
+            if (sortFieldArray.Length != sortOrderArray.Length)
+            {
+                return BadRequest();
+            }
+
+            var result = await _employeeService.GetPagedEmployeesAsync(page, pageSize, sortFieldArray, sortOrderArray);
+            return Ok(result);
+        }
     }
 }
