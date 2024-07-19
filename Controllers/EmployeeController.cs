@@ -103,9 +103,20 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpGet("GetPagingRecord")]
-        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees([FromQuery] int page, [FromQuery] int pageSize, [FromQuery] string sortField, [FromQuery] string sortOrder)
+        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees([FromQuery] int page,
+            [FromQuery] int pageSize,
+            [FromQuery] string sortFields,
+            [FromQuery] string sortOrders)
         {
-            var result = await _employeeService.GetPagedEmployeesAsync(page, pageSize, sortField, sortOrder);
+            var sortFieldArray = sortFields.Split(',');
+            var sortOrderArray = sortOrders.Split(',');
+
+            if (sortFieldArray.Length != sortOrderArray.Length)
+            {
+                return BadRequest();
+            }
+
+            var result = await _employeeService.GetPagedEmployeesAsync(page, pageSize, sortFieldArray, sortOrderArray);
             return Ok(result);
         }
     }

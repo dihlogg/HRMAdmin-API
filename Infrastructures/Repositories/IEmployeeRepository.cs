@@ -8,7 +8,8 @@ public interface IEmployeeRepository : IGenericRepository<Employee>
     Task<List<EmployeeDto>> GetInCludeParentChild();
     Task<int> CountAsync();
     IQueryable<Employee> Query();
-    Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string sortField, string sortOrder);
+    IQueryable<Employee> AsQueryable();
+    Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
     Task<List<EmployeeDto>> SearchEmployeeDtosAsync(
         string? employeeName = null,
         string? status = null,

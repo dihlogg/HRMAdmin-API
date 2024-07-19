@@ -14,7 +14,7 @@ public interface IEmployeeServive
         string? jobTitle = null,
         string? supervisorName = null,
         string? subName = null);
-    Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string sortField, string sortOrder);
+    Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
 
 }
 
@@ -24,6 +24,6 @@ public class PagedResult<T>
     public int TotalCount { get; set; }
     public int PageIndex { get; set; }
     public int PageSize { get; set; }
-    public string SortField { get; set; }
-    public string SortOrder { get; set; } // "ASC" or "DESC"
+    public string[] SortFields { get; set; }
+    public string[] SortOrders { get; set; }
 }

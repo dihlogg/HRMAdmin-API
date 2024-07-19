@@ -2,6 +2,7 @@
 using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Entities;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using System.Linq.Dynamic.Core;
 
 namespace AdminHRM.Server.Infrastructures;
@@ -16,14 +17,17 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     {
         return await _hrmDbContext.Employees.CountAsync();
     }
-    public async Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string sortField, string sortOrder)
+    public async Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string[] sortFields, string[] sortOrders)
     {
         var query = _hrmDbContext.Employees.AsQueryable();
 
-        if (!string.IsNullOrEmpty(sortField))
+        if (sortFields != null && sortOrders != null && sortFields.Length == sortOrders.Length)
         {
-            var sortOrderString = sortOrder.ToUpper() == "DESC" ? "descending" : "ascending";
-            query = query.OrderBy($"{sortField} {sortOrderString}");
+            for (int i = 0; i < sortFields.Length; i++)
+            {
+                var sortOrderString = sortOrders[i].ToUpper() == "DESC" ? "descending" : "ascending";
+                query = query.OrderBy($"{sortFields[i]} {sortOrderString}");
+            }
         }
 
         return await query.Skip((page - 1) * pageSize).Take(pageSize)
@@ -143,5 +147,10 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     public IQueryable<Employee> Query()
     {
         return _hrmDbContext.Employees.AsQueryable();
+    }
+
+    public IQueryable<Employee> AsQueryable()
+    {
+        throw new NotImplementedException();
     }
 }

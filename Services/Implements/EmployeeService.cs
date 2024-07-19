@@ -101,20 +101,41 @@ public class EmployeeServive : IEmployeeServive
         }
     }
 
-    public async Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string sortField, string sortOrder)
+    public async Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string[] sortFields, string[] sortOrders)
     {
+        //try
+        //{
+        //    var query = _employeeRepository.Query();
+        //    // Sorting
+        //    if (!string.IsNullOrEmpty(sortField))
+        //    {
+        //        var sortOrderString = sortOrder.ToUpper() == "DESC" ? "descending" : "ascending";
+        //        query = query.OrderBy($"{sortField} {sortOrderString}");
+        //    }
+
+        //    var totalEmployees = await _employeeRepository.CountAsync();
+        //    var employees = await _employeeRepository.GetPagedAsync(page, pageSize, sortField, sortOrder);
+        //    var employeeDtos = _mapper.Map<List<EmployeeDto>>(employees);
+
+        //    return new PagedResult<EmployeeDto>
+        //    {
+        //        Items = employeeDtos,
+        //        TotalCount = totalEmployees,
+        //        PageIndex = page,
+        //        PageSize = pageSize,
+        //        SortField = sortField,
+        //        SortOrder = sortOrder
+        //    };
+        //}
+        //catch (Exception ex)
+        //{
+        //    _logger.LogError(ex.Message);
+        //    throw;
+        //}
         try
         {
-            var query = _employeeRepository.Query();
-            // Sorting
-            if (!string.IsNullOrEmpty(sortField))
-            {
-                var sortOrderString = sortOrder.ToUpper() == "DESC" ? "descending" : "ascending";
-                query = query.OrderBy($"{sortField} {sortOrderString}");
-            }
-
             var totalEmployees = await _employeeRepository.CountAsync();
-            var employees = await _employeeRepository.GetPagedAsync(page, pageSize, sortField, sortOrder);
+            var employees = await _employeeRepository.GetPagedAsync(page, pageSize, sortFields, sortOrders);
             var employeeDtos = _mapper.Map<List<EmployeeDto>>(employees);
 
             return new PagedResult<EmployeeDto>
@@ -123,8 +144,8 @@ public class EmployeeServive : IEmployeeServive
                 TotalCount = totalEmployees,
                 PageIndex = page,
                 PageSize = pageSize,
-                SortField = sortField,
-                SortOrder = sortOrder
+                SortFields = sortFields,
+                SortOrders = sortOrders
             };
         }
         catch (Exception ex)
