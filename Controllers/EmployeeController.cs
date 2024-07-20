@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Services;
+using AdminHRM.Dtos;
 
 namespace AdminHRM.Server.Controllers
 {
@@ -84,16 +85,11 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpGet("SearchEmployees")]
-        public async Task<IActionResult> SearchEmployees(
-           string? employeeName = null,
-           string? status = null,
-           string? jobTitle = null,
-           string? supervisorName = null,
-           string? subName = null)
+        public async Task<IActionResult> SearchEmployees(SearchEmployeeDto searchEmployeeDto)
         {
             try
             {
-                var data = await _employeeService.SearchEmployeeDtosAsync(employeeName, supervisorName, status, jobTitle, subName);
+                var data = await _employeeService.SearchEmployeeDtosAsync(searchEmployeeDto);
                 return Ok(data);
             }
             catch (Exception ex)
