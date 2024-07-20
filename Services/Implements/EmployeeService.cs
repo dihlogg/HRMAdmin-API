@@ -12,6 +12,15 @@ public interface IEmployeeServive
     Task<bool?> EditEmployeeAsync(EmployeeDto employeeDto);
     Task<bool?> RemoveEmployeeDtosAsync(Guid id);
     Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto);
+
+    /// <summary>
+    /// Get paging for PIM screen
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="sortFields"></param>
+    /// <param name="sortOrders"></param>
+    /// <returns></returns>
     Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
 
 }
