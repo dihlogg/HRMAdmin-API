@@ -1,7 +1,7 @@
-﻿using AdminHRM.Server.Dtos;
+﻿using AdminHRM.Dtos;
+using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Entities;
 using AutoMapper;
-using System.Dynamic;
 
 namespace AdminHRM.Server
 {
