@@ -2,6 +2,7 @@
 using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Entities;
 using AutoMapper;
+using System.Linq.Dynamic.Core;
 
 namespace AdminHRM.Server
 {
@@ -21,6 +22,8 @@ namespace AdminHRM.Server
             CreateMap<Employee, EmployeeDto>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
             CreateMap<EmployeeDto, Employee>().ReverseMap()
+                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+            CreateMap<EmployeeDto, PagedResult>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
         }
     }
