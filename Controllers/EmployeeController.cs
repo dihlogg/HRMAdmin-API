@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Services;
 using AdminHRM.Dtos;
 
@@ -99,21 +98,24 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpGet("GetPagingRecord")]
-        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees([FromQuery] int page,
-            [FromQuery] int pageSize,
-            [FromQuery] string sortFields,
-            [FromQuery] string sortOrders)
+        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees(
+    [FromQuery] int page,
+    [FromQuery] int pageSize,
+    [FromQuery] string sortFields,
+    [FromQuery] string sortOrders)
         {
             var sortFieldArray = sortFields.Split(',');
             var sortOrderArray = sortOrders.Split(',');
 
             if (sortFieldArray.Length != sortOrderArray.Length)
             {
-                return BadRequest();
+                return BadRequest("The number of sort fields must match the number of sort orders");
             }
 
             var result = await _employeeService.GetPagedEmployeesAsync(page, pageSize, sortFieldArray, sortOrderArray);
             return Ok(result);
         }
+
+
     }
 }

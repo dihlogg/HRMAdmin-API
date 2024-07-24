@@ -1,10 +1,17 @@
-﻿using AdminHRM.Server.Services;
-using AutoMapper;
+﻿using AutoMapper;
 using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Entities;
 using AdminHRM.Server.Infrastructures;
 
 namespace AdminHRM.Server.Services;
+
+public interface ISubUnitService
+{
+    Task<List<SubUnitDto>> GetSubUnitDtosAsync();
+    Task<bool> AddSubUnitAsync(SubUnitCreateDto subUnitCreateDto);
+    Task<bool?> EditSubUnitAsync(SubUnitDto subUnitDto);
+    Task<bool?> RemoveSubUnitDtosAsync(Guid id);
+}
 
 public class SubUnitService : ISubUnitService
 {

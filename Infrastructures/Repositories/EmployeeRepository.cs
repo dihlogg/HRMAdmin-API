@@ -3,6 +3,9 @@ using AdminHRM.Server.DataContext;
 using AdminHRM.Server.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
+using System.Data;
+using System.Linq;
+using System;
 
 namespace AdminHRM.Server.Infrastructures;
 
@@ -41,7 +44,8 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
             for (int i = 0; i < sortFields.Length; i++)
             {
                 var sortOrderString = sortOrders[i].ToUpper() == "DESC" ? "descending" : "ascending";
-                query = query.OrderBy($"{sortFields[i]} {sortOrderString}");
+                query = i == 0 ? query.OrderBy($"{sortFields[i]} {sortOrderString}")
+                               : ((IOrderedQueryable<Employee>)query).ThenBy($"{sortFields[i]} {sortOrderString}");
             }
         }
 
@@ -67,6 +71,8 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
                 }).ToList()
             }).ToListAsync();
     }
+
+
 
     public async Task<List<EmployeeDto>> GetInCludeParentChild()
     {
