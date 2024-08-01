@@ -1,6 +1,7 @@
-﻿using AdminHRM.Entities;
-using AdminHRM.Server.AppSettings;
+﻿using AdminHRM.Server.AppSettings;
 using AdminHRM.Server.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -10,7 +11,6 @@ namespace AdminHRM.Server.DataContext;
 public class HrmDbContext : DbContext
 {
     private readonly PostgreSetting _postgreSetting;
-
     public HrmDbContext(PostgreSetting postgreSetting)
     {
         _postgreSetting = postgreSetting;
@@ -25,11 +25,11 @@ public class HrmDbContext : DbContext
     }
     public virtual DbSet<Employee> Employees { get; set; }
     public virtual DbSet<SubUnit> SubUnits { get; set; }
-    public virtual DbSet<Category> Categories { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<SubUnit>().ToTable("SubUnits").HasKey(x => x.Id);
 
@@ -43,12 +43,6 @@ public class HrmDbContext : DbContext
         .WithMany(g => g.Employees)
         .HasForeignKey(s => s.EmployeeId)
         .OnDelete(DeleteBehavior.Restrict); // Không cho phép xóa cha nếu có con;
-
-        modelBuilder.Entity<Category>()
-          .HasOne(c => c.Parent)
-          .WithMany(c => c.Children)
-          .HasForeignKey(c => c.ParentId)
-          .OnDelete(DeleteBehavior.Restrict); // Không cho phép xóa cha nếu có con
     }
 
     public override int SaveChanges()
