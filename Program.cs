@@ -2,14 +2,21 @@ using AdminHRM.Server.AppSettings;
 using AdminHRM.Server.DataContext;
 using AdminHRM.Server.Infrastructures;
 using AdminHRM.Server.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
-// // Load PostgreSQL settings
+
+var configuration = builder.Configuration;
+
+// Load PostgreSQL settings
 var postgreSetting = new PostgreSetting();
 builder.Configuration.Bind("PostgreSetting", postgreSetting);
 builder.Services.AddSingleton(postgreSetting);
+
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
@@ -19,6 +26,23 @@ builder.Services.AddCors(options =>
                     .AllowAnyHeader()
                     .AllowAnyMethod();
     });
+});
+
+// For Entity Framework
+builder.Services.AddDbContext<IdentityContext>(options =>
+    options.UseNpgsql(postgreSetting.ConnectionString));
+
+// For Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<IdentityContext>()
+    .AddDefaultTokenProviders();
+
+// Add Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 });
 
 builder.Services.AddApplicationServicesExtension();
@@ -31,6 +55,9 @@ builder.Services.AddScoped<IEmployeeServive, EmployeeServive>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 // Configure Entity Framework to use PostgreSQL
+builder.Services.AddDbContext<IdentityContext>(options =>
+    options.UseNpgsql(postgreSetting.ConnectionString));
+
 builder.Services.AddDbContext<HrmDbContext>(options =>
     options.UseNpgsql(postgreSetting.ConnectionString));
 
