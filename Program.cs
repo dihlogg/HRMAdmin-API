@@ -2,6 +2,7 @@ using AdminHRM.Server.AppSettings;
 using AdminHRM.Server.DataContext;
 using AdminHRM.Server.Infrastructures;
 using AdminHRM.Server.Services;
+using AdminHRM.Server.Services.Implements;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<IdentityContext>()
     .AddDefaultTokenProviders();
 
+// Add config for Required Email
+builder.Services.Configure<IdentityOptions>(options =>
+    options.SignIn.RequireConfirmedEmail = true);
+
 // Add Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -44,6 +49,14 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 });
+
+// Add Email Configs
+var emailConfig = configuration
+    .GetSection("EmailConfiguration")
+    .Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+builder.Services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddApplicationServicesExtension();
 builder.Services.AddControllers();
@@ -53,13 +66,6 @@ builder.Services.AddDbContext<HrmDbContext>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IEmployeeServive, EmployeeServive>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
-// Configure Entity Framework to use PostgreSQL
-builder.Services.AddDbContext<IdentityContext>(options =>
-    options.UseNpgsql(postgreSetting.ConnectionString));
-
-builder.Services.AddDbContext<HrmDbContext>(options =>
-    options.UseNpgsql(postgreSetting.ConnectionString));
 
 var app = builder.Build();
 
