@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminHRM.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20240801035148_Identity")]
-    partial class Identity
+    [Migration("20240805160032_InitData")]
+    partial class InitData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,24 +53,24 @@ namespace AdminHRM.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "41f17b5a-4cc4-4bed-990a-0b3a1ac24b3f",
-                            ConcurrencyStamp = "1",
+                            Id = "7e77ff29-e56c-4c6f-83fd-adf78192385f",
+                            ConcurrencyStamp = "4:00:32 PM",
                             Name = "Admin",
-                            NormalizedName = "Admin"
+                            NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "341ed9c7-7900-4314-9369-2bb81e4271e0",
-                            ConcurrencyStamp = "2",
+                            Id = "3b3fe165-65d1-43da-9e9c-8d4d3609286d",
+                            ConcurrencyStamp = "4:00:32 PM",
                             Name = "User",
-                            NormalizedName = "User"
+                            NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "5c43246b-add3-42a2-bee0-5d3a331a8697",
-                            ConcurrencyStamp = "3",
+                            Id = "61641272-6575-4997-a08d-a521f541c3ad",
+                            ConcurrencyStamp = "4:00:32 PM",
                             Name = "Human Resources",
-                            NormalizedName = "Human Resources"
+                            NormalizedName = "HUMAN RESOURCES"
                         });
                 });
 
