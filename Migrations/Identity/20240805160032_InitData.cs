@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminHRM.Migrations.Identity
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class InitData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -164,9 +164,9 @@ namespace AdminHRM.Migrations.Identity
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "341ed9c7-7900-4314-9369-2bb81e4271e0", "2", "User", "User" },
-                    { "41f17b5a-4cc4-4bed-990a-0b3a1ac24b3f", "1", "Admin", "Admin" },
-                    { "5c43246b-add3-42a2-bee0-5d3a331a8697", "3", "Human Resources", "Human Resources" }
+                    { "3b3fe165-65d1-43da-9e9c-8d4d3609286d", "4:00:32 PM", "User", "USER" },
+                    { "61641272-6575-4997-a08d-a521f541c3ad", "4:00:32 PM", "Human Resources", "HUMAN RESOURCES" },
+                    { "7e77ff29-e56c-4c6f-83fd-adf78192385f", "4:00:32 PM", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

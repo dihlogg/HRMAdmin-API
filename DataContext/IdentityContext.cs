@@ -16,9 +16,9 @@ namespace AdminHRM.Server.DataContext
         {
             modelBuilder.Entity<IdentityRole>().HasData
                 (
-                new IdentityRole() { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
-                new IdentityRole() { Name = "User", ConcurrencyStamp = "2", NormalizedName = "User" },
-                new IdentityRole() { Name = "Human Resources", ConcurrencyStamp = "3", NormalizedName = "Human Resources" }
+                new IdentityRole() { Name = "Admin", ConcurrencyStamp = DateTime.UtcNow.ToLongTimeString(), NormalizedName = "ADMIN" },
+                new IdentityRole() { Name = "User", ConcurrencyStamp = DateTime.UtcNow.ToLongTimeString(), NormalizedName = "USER" },
+                new IdentityRole() { Name = "Human Resources", ConcurrencyStamp = DateTime.UtcNow.ToLongTimeString(), NormalizedName = "HUMAN RESOURCES" }
                 );
         }
     }
