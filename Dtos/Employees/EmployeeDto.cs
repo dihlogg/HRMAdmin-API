@@ -5,7 +5,7 @@
         public Guid Id { get; set; }
         public string? SubUnitName { get; set; }
         public EmployeeParentChildDto? SupperVisor { get; set; }
-        public IEnumerable<EmployeeParentChildDto> EmployeeChildrens { get; set; }
+        public IEnumerable<EmployeeParentChildDto>? EmployeeChildrens { get; set; }
     }
     public class EmployeeParentChildDto
     {

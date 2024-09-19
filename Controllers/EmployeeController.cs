@@ -84,10 +84,19 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpGet("SearchEmployees")]
-        public async Task<IActionResult> SearchEmployees(SearchEmployeeDto searchEmployeeDto)
+        public async Task<IActionResult> SearchEmployees([FromQuery] string? firstName, [FromQuery] string? lastName, [FromQuery] string? jobTitle, [FromQuery] string? status)
         {
             try
             {
+                var employeeName = string.Join(" ", firstName, lastName).Trim();
+
+                var searchEmployeeDto = new SearchEmployeeDto
+                {
+                    EmployeeName = employeeName,
+                    JobTitle = jobTitle,
+                    Status = status
+                };
+
                 var data = await _employeeService.SearchEmployeeDtosAsync(searchEmployeeDto);
                 return Ok(data);
             }
@@ -96,6 +105,7 @@ namespace AdminHRM.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpGet("GetPagingRecord")]
         public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees(

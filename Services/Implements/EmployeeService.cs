@@ -95,7 +95,6 @@ public class EmployeeServive : IEmployeeServive
         try
         {
             return await _employeeRepository.SearchEmployeeDtosAsync(searchEmployeeDto);
-            //return _mapper.Map<List<EmployeeDto>>(data);
         }
         catch (Exception ex)
         {

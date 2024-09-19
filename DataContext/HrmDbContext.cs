@@ -48,6 +48,14 @@ namespace AdminHRM.Server.DataContext
                 .HasForeignKey(s => s.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Employee>()
+                .HasOne(s => s.User)
+                .WithOne()
+                .HasForeignKey<Employee>(s => s.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
             // Cấu hình mối quan hệ 1-1 giữa Employee và IdentityUser
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.User)

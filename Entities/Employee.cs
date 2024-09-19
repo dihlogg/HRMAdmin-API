@@ -11,10 +11,10 @@ namespace AdminHRM.Server.Entities
         public string Status { get; set; }
         public Guid? EmployeeId { get; set; }
         public Guid SubUnitId { get; set; }
-        public Employee SupperEmployee { get; set; }
-        public IList<Employee> Employees { get; set; }
+        public Employee? SupperEmployee { get; set; }
+        public IList<Employee>? Employees { get; set; }
         public SubUnit SubUnits { get; set; }
-        public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public string? UserId { get; set; }
+        public IdentityUser? User { get; set; }
     }
 }
