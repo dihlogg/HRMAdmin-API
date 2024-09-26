@@ -1,12 +1,20 @@
-﻿using AutoMapper;
-using AdminHRM.Server.Dtos;
+﻿using AdminHRM.Dtos;
 using AdminHRM.Server.Entities;
 using AdminHRM.Server.Infrastructures;
-using System.Linq.Dynamic.Core;
-using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using AutoMapper;
 
 namespace AdminHRM.Server.Services;
+
+public interface IEmployeeServive
+{
+    Task<List<EmployeeDto>> GetEmployeeDtosAsync();
+    Task<bool> AddEmployeeAsync(EmployeeCreateDto employeeCreateDto);
+    Task<bool?> EditEmployeeAsync(EmployeeDto employeeDto);
+    Task<bool?> RemoveEmployeeDtosAsync(Guid id);
+    Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto);
+    Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
+
+}
 
 public class EmployeeServive : IEmployeeServive
 {
@@ -82,17 +90,11 @@ public class EmployeeServive : IEmployeeServive
         }
     }
 
-    public async Task<List<EmployeeDto>> SearchEmployeeDtosAsync(
-        string? employeeName = null,
-        string? status = null,
-        string? jobTitle = null,
-        string? supervisorName = null,
-        string? subName = null)
+    public async Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto)
     {
         try
         {
-            return await _employeeRepository.SearchEmployeeDtosAsync(employeeName, supervisorName, status, jobTitle, subName);
-            //return _mapper.Map<List<EmployeeDto>>(data);
+            return await _employeeRepository.SearchEmployeeDtosAsync(searchEmployeeDto);
         }
         catch (Exception ex)
         {
@@ -103,44 +105,14 @@ public class EmployeeServive : IEmployeeServive
 
     public async Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string[] sortFields, string[] sortOrders)
     {
-        //try
-        //{
-        //    var query = _employeeRepository.Query();
-        //    // Sorting
-        //    if (!string.IsNullOrEmpty(sortField))
-        //    {
-        //        var sortOrderString = sortOrder.ToUpper() == "DESC" ? "descending" : "ascending";
-        //        query = query.OrderBy($"{sortField} {sortOrderString}");
-        //    }
-
-        //    var totalEmployees = await _employeeRepository.CountAsync();
-        //    var employees = await _employeeRepository.GetPagedAsync(page, pageSize, sortField, sortOrder);
-        //    var employeeDtos = _mapper.Map<List<EmployeeDto>>(employees);
-
-        //    return new PagedResult<EmployeeDto>
-        //    {
-        //        Items = employeeDtos,
-        //        TotalCount = totalEmployees,
-        //        PageIndex = page,
-        //        PageSize = pageSize,
-        //        SortField = sortField,
-        //        SortOrder = sortOrder
-        //    };
-        //}
-        //catch (Exception ex)
-        //{
-        //    _logger.LogError(ex.Message);
-        //    throw;
-        //}
         try
         {
-            var totalEmployees = await _employeeRepository.CountAsync();
-            var employees = await _employeeRepository.GetPagedAsync(page, pageSize, sortFields, sortOrders);
-            var employeeDtos = _mapper.Map<List<EmployeeDto>>(employees);
+            var totalEmployees = await _employeeRepository.CountAsync().ConfigureAwait(false);
+            var employees = await _employeeRepository.GetPagedAsync(page, pageSize, sortFields, sortOrders).ConfigureAwait(false);
 
             return new PagedResult<EmployeeDto>
             {
-                Items = employeeDtos,
+                Items = employees,
                 TotalCount = totalEmployees,
                 PageIndex = page,
                 PageSize = pageSize,

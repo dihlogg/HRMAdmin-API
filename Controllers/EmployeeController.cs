@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Services;
+using AdminHRM.Dtos;
 
 namespace AdminHRM.Server.Controllers
 {
@@ -84,16 +84,20 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpGet("SearchEmployees")]
-        public async Task<IActionResult> SearchEmployees(
-           string? employeeName = null,
-           string? status = null,
-           string? jobTitle = null,
-           string? supervisorName = null,
-           string? subName = null)
+        public async Task<IActionResult> SearchEmployees([FromQuery] string? firstName, [FromQuery] string? lastName, [FromQuery] string? jobTitle, [FromQuery] string? status)
         {
             try
             {
-                var data = await _employeeService.SearchEmployeeDtosAsync(employeeName, supervisorName, status, jobTitle, subName);
+                var employeeName = string.Join(" ", firstName, lastName).Trim();
+
+                var searchEmployeeDto = new SearchEmployeeDto
+                {
+                    EmployeeName = employeeName,
+                    JobTitle = jobTitle,
+                    Status = status
+                };
+
+                var data = await _employeeService.SearchEmployeeDtosAsync(searchEmployeeDto);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -102,22 +106,26 @@ namespace AdminHRM.Server.Controllers
             }
         }
 
+
         [HttpGet("GetPagingRecord")]
-        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees([FromQuery] int page,
-            [FromQuery] int pageSize,
-            [FromQuery] string sortFields,
-            [FromQuery] string sortOrders)
+        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees(
+    [FromQuery] int page,
+    [FromQuery] int pageSize,
+    [FromQuery] string sortFields,
+    [FromQuery] string sortOrders)
         {
             var sortFieldArray = sortFields.Split(',');
             var sortOrderArray = sortOrders.Split(',');
 
             if (sortFieldArray.Length != sortOrderArray.Length)
             {
-                return BadRequest();
+                return BadRequest("The number of sort fields must match the number of sort orders");
             }
 
             var result = await _employeeService.GetPagedEmployeesAsync(page, pageSize, sortFieldArray, sortOrderArray);
             return Ok(result);
         }
+
+
     }
 }
