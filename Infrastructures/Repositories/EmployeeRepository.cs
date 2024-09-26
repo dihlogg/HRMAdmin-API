@@ -22,6 +22,7 @@ public interface IEmployeeRepository : IGenericRepository<Employee>
     Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
 
     Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto);
+    Task<Employee?> GetEmployeeByIdAsync(Guid id);
 }
 
 public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
@@ -167,5 +168,10 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     public IQueryable<Employee> AsQueryable()
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Employee?> GetEmployeeByIdAsync(Guid id)
+    {
+        return await _hrmDbContext.Employees.FirstOrDefaultAsync(e => e.Id == id);
     }
 }

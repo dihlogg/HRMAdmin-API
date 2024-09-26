@@ -13,7 +13,7 @@ public interface IEmployeeServive
     Task<bool?> RemoveEmployeeDtosAsync(Guid id);
     Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto);
     Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
-
+    Task<Employee?> GetEmployeeByIdAsync(Guid id);
 }
 
 public class EmployeeServive : IEmployeeServive
@@ -82,6 +82,18 @@ public class EmployeeServive : IEmployeeServive
         try
         {
             return await _employeeRepository.DeleteByKey(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
+    }
+    public async Task<Employee?> GetEmployeeByIdAsync(Guid id)
+    {
+        try
+        {
+            return await _employeeRepository.GetEmployeeByIdAsync(id);
         }
         catch (Exception ex)
         {
