@@ -34,6 +34,5 @@ public class EmployeeCreateDto
     /// <summary>
     /// Unit Id
     /// </summary>
-    [Required]
-    public Guid SubUnitId { get; set; }
+    public Guid? SubUnitId { get; set; }
 }

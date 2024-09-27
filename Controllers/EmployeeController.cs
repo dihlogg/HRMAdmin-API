@@ -82,6 +82,16 @@ namespace AdminHRM.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("GetEmployeeById/{id}")]
+        public async Task<IActionResult> GetEmployeeById(Guid id)
+        {
+            var employee = await _employeeService.GetEmployeeByIdAsync(id);
+            if(employee == null)
+            {
+                return NotFound();
+            }
+            return Ok(employee);
+        }
 
         [HttpGet("SearchEmployees")]
         public async Task<IActionResult> SearchEmployees([FromQuery] string? firstName, [FromQuery] string? lastName, [FromQuery] string? jobTitle, [FromQuery] string? status)
