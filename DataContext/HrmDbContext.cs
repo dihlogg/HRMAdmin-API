@@ -1,4 +1,5 @@
-﻿using AdminHRM.Server.AppSettings;
+﻿using AdminHRM.Entities;
+using AdminHRM.Server.AppSettings;
 using AdminHRM.Server.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,7 @@ namespace AdminHRM.Server.DataContext
 
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<SubUnit> SubUnits { get; set; }
+        public virtual DbSet<Leave> Leaves { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +56,13 @@ namespace AdminHRM.Server.DataContext
                 .HasForeignKey<Employee>(s => s.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Leave>()
+               .ToTable("Leaves")
+               .HasOne<Employee>()
+               .WithMany(e => e.Leaves)
+               .HasForeignKey(l => l.EmployeeId)
+               .OnDelete(DeleteBehavior.Cascade);
 
 
             // Cấu hình mối quan hệ 1-1 giữa Employee và IdentityUser
