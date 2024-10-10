@@ -13,7 +13,7 @@ namespace AdminHRM.Services.Implements;
 public interface ILeaveServive
 {
     Task<List<LeaveDto>> GetLeaveDtosAsync();
-    Task<bool> AddLeaveAsync(LeaveCreateDto leaveCreateDto);
+    Task<bool> AddLeaveAsync(Dtos.Leaves.LeaveCreateDto leaveCreateDto);
     Task<bool?> EditLeaveAsync(LeaveDto leaveDto);
     Task<bool?> RemoveLeaveDtosAsync(Guid id);
 }
@@ -35,8 +35,8 @@ public class LeaveService : ILeaveServive
     {
         try
         {
-            var data = await _leaveRepository.GetAllAsync();
-            return _mapper.Map<List<LeaveDto>>(data);
+            var data = await _leaveRepository.GetOnlyLeaves();
+            return data;
         }
         catch (Exception ex)
         {
@@ -44,7 +44,7 @@ public class LeaveService : ILeaveServive
             throw;
         }
     }
-    public async Task<bool> AddLeaveAsync(LeaveCreateDto leaveCreateDto)
+    public async Task<bool> AddLeaveAsync(Dtos.Leaves.LeaveCreateDto leaveCreateDto)
     {
         try
         {

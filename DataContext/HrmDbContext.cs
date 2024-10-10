@@ -58,11 +58,12 @@ namespace AdminHRM.Server.DataContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Leave>()
-               .ToTable("Leaves")
-               .HasOne<Employee>()
-               .WithMany(e => e.Leaves)
-               .HasForeignKey(l => l.EmployeeId)
-               .OnDelete(DeleteBehavior.Cascade);
+                .ToTable("Leaves")
+                .HasOne(l => l.Employees)
+                .WithMany(e => e.Leaves)
+                .HasForeignKey(l => l.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
 
             // Cấu hình mối quan hệ 1-1 giữa Employee và IdentityUser

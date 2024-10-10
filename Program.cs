@@ -82,8 +82,6 @@ builder.Services.AddApplicationServicesExtension();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<HrmDbContext>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IEmployeeServive, EmployeeServive>();
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

@@ -40,20 +40,6 @@ public class SubUnitService : ISubUnitService
         }
     }
 
-    public async Task<bool> AddSubUnitAsync(SubUnitCreateDto subUnitCreateDto)
-    {
-        try
-        {
-            var info = _mapper.Map<SubUnit>(subUnitCreateDto);
-            return await _subUnitRepository.AddAsync(info);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            throw;
-        }
-    }
-
     public async Task<bool?> EditSubUnitAsync(SubUnitDto subUnitDto)
     {
         try
@@ -79,6 +65,20 @@ public class SubUnitService : ISubUnitService
         try
         {
             return await _subUnitRepository.DeleteByKey(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<bool> AddSubUnitAsync(SubUnitCreateDto subUnitCreateDto)
+    {
+        try
+        {
+            var info = _mapper.Map<SubUnit>(subUnitCreateDto);
+            return await _subUnitRepository.AddAsync(info);
         }
         catch (Exception ex)
         {

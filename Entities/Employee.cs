@@ -17,7 +17,6 @@ namespace AdminHRM.Server.Entities
         public SubUnit? SubUnits { get; set; }
         public string? UserId { get; set; }
         public IdentityUser? User { get; set; }
-        public IList<Leave>? Leaves { get; set; }
-        public Guid? LeaveId { get; set; }
+        public IList<Leave> Leaves { get; set; }
     }
 }

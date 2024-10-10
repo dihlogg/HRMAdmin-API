@@ -36,7 +36,7 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpPost("PostLeave")]
-        public async Task<IActionResult> PostLeave(LeaveCreateDto leaveCreateDto)
+        public async Task<IActionResult> PostLeave(AdminHRM.Dtos.Leaves.LeaveCreateDto leaveCreateDto)
         {
             try
             {
