@@ -82,11 +82,12 @@ namespace AdminHRM.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("GetEmployeeById/{id}")]
         public async Task<IActionResult> GetEmployeeById(Guid id)
         {
             var employee = await _employeeService.GetEmployeeByIdAsync(id);
-            if(employee == null)
+            if (employee == null)
             {
                 return NotFound();
             }
@@ -94,12 +95,10 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpGet("SearchEmployees")]
-        public async Task<IActionResult> SearchEmployees([FromQuery] string? firstName, [FromQuery] string? lastName, [FromQuery] string? jobTitle, [FromQuery] string? status)
+        public async Task<IActionResult> SearchEmployees([FromQuery] string? employeeName, [FromQuery] string? jobTitle, [FromQuery] string? status)
         {
             try
             {
-                var employeeName = string.Join(" ", firstName, lastName).Trim();
-
                 var searchEmployeeDto = new SearchEmployeeDto
                 {
                     EmployeeName = employeeName,
@@ -116,16 +115,22 @@ namespace AdminHRM.Server.Controllers
             }
         }
 
-
         [HttpGet("GetPagingRecord")]
         public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees(
-    [FromQuery] int page,
-    [FromQuery] int pageSize,
-    [FromQuery] string sortFields,
-    [FromQuery] string sortOrders)
+            [FromQuery] int page,
+            [FromQuery] int pageSize,
+            [FromQuery] string? sortFields,
+            [FromQuery] string? sortOrders)
         {
-            var sortFieldArray = sortFields.Split(',');
-            var sortOrderArray = sortOrders.Split(',');
+            string[] sortFieldArray = [], sortOrderArray = [];
+            if (!string.IsNullOrEmpty(sortFields))
+            {
+                sortFieldArray = sortFields.Split(',');
+            }
+            if (!string.IsNullOrEmpty(sortOrders))
+            {
+                sortOrderArray = sortOrders.Split(',');
+            }
 
             if (sortFieldArray.Length != sortOrderArray.Length)
             {
@@ -135,7 +140,5 @@ namespace AdminHRM.Server.Controllers
             var result = await _employeeService.GetPagedEmployeesAsync(page, pageSize, sortFieldArray, sortOrderArray);
             return Ok(result);
         }
-
-
     }
 }

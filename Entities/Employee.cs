@@ -1,4 +1,5 @@
-﻿using AdminHRM.Server.Dtos;
+﻿using AdminHRM.Entities;
+using AdminHRM.Server.Dtos;
 using Microsoft.AspNetCore.Identity;
 
 namespace AdminHRM.Server.Entities
@@ -16,5 +17,7 @@ namespace AdminHRM.Server.Entities
         public SubUnit? SubUnits { get; set; }
         public string? UserId { get; set; }
         public IdentityUser? User { get; set; }
+        public IList<Leave>? Leaves { get; set; }
+        public Guid? LeaveId { get; set; }
     }
 }
