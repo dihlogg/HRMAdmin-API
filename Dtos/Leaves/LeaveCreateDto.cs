@@ -6,6 +6,5 @@ public class LeaveCreateDto
     public DateTime? ToDate { get; set; }
     public string? LeaveStatus { get; set; }
     public string? LeaveType { get; set; }
-    public string? EmployeeName { get; set; }
-    public Guid? SubUnitId { get; set; }
+    public Guid EmployeeId { get; set; }
 }

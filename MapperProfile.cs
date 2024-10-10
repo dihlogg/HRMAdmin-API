@@ -1,4 +1,6 @@
 ﻿using AdminHRM.Dtos;
+using AdminHRM.Dtos.Leaves;
+using AdminHRM.Entities;
 using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Entities;
 using AutoMapper;
@@ -24,6 +26,13 @@ namespace AdminHRM.Server
             CreateMap<EmployeeDto, Employee>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
             CreateMap<EmployeeDto, PagedResult>().ReverseMap()
+                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+
+            CreateMap<LeaveCreateDto, Leave>().ReverseMap()
+               .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+            CreateMap<Leave, LeaveDto>().ReverseMap()
+                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+            CreateMap<LeaveDto, Leave>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
         }
     }

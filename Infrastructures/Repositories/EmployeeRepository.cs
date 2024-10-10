@@ -73,8 +73,6 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
             }).ToListAsync();
     }
 
-
-
     public async Task<List<EmployeeDto>> GetInCludeParentChild()
     {
         var query = _hrmDbContext.Employees

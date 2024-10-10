@@ -3,6 +3,7 @@ using System;
 using AdminHRM.Server.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminHRM.Migrations
 {
     [DbContext(typeof(HrmDbContext))]
-    partial class HrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241010012107_UpdateLeave")]
+    partial class UpdateLeave
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,6 +40,9 @@ namespace AdminHRM.Migrations
                     b.Property<Guid?>("EmployeeId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("EmployeeName")
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("FromDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -45,6 +51,9 @@ namespace AdminHRM.Migrations
 
                     b.Property<string>("LeaveType")
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("SubUnitId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("ToDate")
                         .HasColumnType("timestamp with time zone");
@@ -57,9 +66,9 @@ namespace AdminHRM.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("SubUnitId");
 
-                    b.ToTable("Leaves", (string)null);
+                    b.ToTable("Leaves");
                 });
 
             modelBuilder.Entity("AdminHRM.Server.Entities.Employee", b =>
@@ -87,6 +96,9 @@ namespace AdminHRM.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("LeaveId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
@@ -112,7 +124,7 @@ namespace AdminHRM.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employee", (string)null);
                 });
 
             modelBuilder.Entity("AdminHRM.Server.Entities.SubUnit", b =>
@@ -195,16 +207,20 @@ namespace AdminHRM.Migrations
 
             modelBuilder.Entity("AdminHRM.Entities.Leave", b =>
                 {
-                    b.HasOne("AdminHRM.Server.Entities.Employee", "Employees")
-                        .WithMany("Leaves")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("AdminHRM.Server.Entities.SubUnit", "SubUnits")
+                        .WithMany()
+                        .HasForeignKey("SubUnitId");
 
-                    b.Navigation("Employees");
+                    b.Navigation("SubUnits");
                 });
 
             modelBuilder.Entity("AdminHRM.Server.Entities.Employee", b =>
                 {
+                    b.HasOne("AdminHRM.Entities.Leave", "Leaves")
+                        .WithMany("Employees")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("AdminHRM.Server.Entities.Employee", "SupperEmployee")
                         .WithMany("Employees")
                         .HasForeignKey("EmployeeId")
@@ -219,6 +235,8 @@ namespace AdminHRM.Migrations
                         .HasForeignKey("AdminHRM.Server.Entities.Employee", "UserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.Navigation("Leaves");
+
                     b.Navigation("SubUnits");
 
                     b.Navigation("SupperEmployee");
@@ -226,11 +244,14 @@ namespace AdminHRM.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AdminHRM.Entities.Leave", b =>
+                {
+                    b.Navigation("Employees");
+                });
+
             modelBuilder.Entity("AdminHRM.Server.Entities.Employee", b =>
                 {
                     b.Navigation("Employees");
-
-                    b.Navigation("Leaves");
                 });
 
             modelBuilder.Entity("AdminHRM.Server.Entities.SubUnit", b =>
