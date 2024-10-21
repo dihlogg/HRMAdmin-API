@@ -84,5 +84,33 @@ namespace AdminHRM.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("SearchLeaves")]
+        public async Task<IActionResult> SearchLeaves([FromQuery] DateTime? fromDate,
+            [FromQuery] DateTime? toDate,
+            [FromQuery] string? leaveType,
+            [FromQuery] string? leaveStatus,
+            [FromQuery] string? employeeName,
+            [FromQuery] string? subName)
+        {
+            try
+            {
+                var searchLeaveDto = new SearchLeaveDto
+                {
+                    FromDate = fromDate,
+                    ToDate = toDate,
+                    LeaveType = leaveType,
+                    LeaveStatus = leaveStatus,
+                    EmployeeName = employeeName,
+                    SubName = subName
+                };
+                var data = await _leaveService.SearchLeaveDtosAsync(searchLeaveDto);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

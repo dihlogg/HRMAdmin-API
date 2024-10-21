@@ -16,6 +16,7 @@ public interface ILeaveServive
     Task<bool> AddLeaveAsync(Dtos.Leaves.LeaveCreateDto leaveCreateDto);
     Task<bool?> EditLeaveAsync(LeaveDto leaveDto);
     Task<bool?> RemoveLeaveDtosAsync(Guid id);
+    Task<List<LeaveDto>> SearchLeaveDtosAsync(SearchLeaveDto searchLeaveDto);
 }
 
 public class LeaveService : ILeaveServive
@@ -86,6 +87,19 @@ public class LeaveService : ILeaveServive
             return await _leaveRepository.DeleteByKey(id);
         }
         catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<List<LeaveDto>> SearchLeaveDtosAsync(SearchLeaveDto searchLeaveDto)
+    {
+        try
+        {
+            return await _leaveRepository.SearchLeaveDtosAsync(searchLeaveDto);
+        }
+        catch(Exception ex)
         {
             _logger.LogError(ex.Message);
             throw;
