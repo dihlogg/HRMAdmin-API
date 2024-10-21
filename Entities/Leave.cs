@@ -8,6 +8,7 @@ namespace AdminHRM.Entities
         public DateTime? ToDate { get; set; }
         public string? LeaveStatus { get; set; }
         public string? LeaveType { get; set; }
+        public string? Comment { get; set; }
         // Foreign key for employee
         public Guid? EmployeeId { get; set; }
 
