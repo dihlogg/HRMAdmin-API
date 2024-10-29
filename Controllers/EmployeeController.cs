@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AdminHRM.Server.Services;
 using AdminHRM.Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdminHRM.Server.Controllers
 {
@@ -91,6 +92,19 @@ namespace AdminHRM.Server.Controllers
             {
                 return NotFound();
             }
+            return Ok(employee);
+        }
+
+        [HttpGet("GetEmployeeByUserId/{userId}")]
+        public async Task<ActionResult<EmployeeDto>> GetEmployeeByUserId(string userId)
+        {
+            var employee = await _employeeService.GetEmployeeByUserIdAsync(userId);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
             return Ok(employee);
         }
 

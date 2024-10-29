@@ -18,5 +18,6 @@ public static class ApplicationServicesExtensions
         services.AddTransient<IEmployeeServive, EmployeeServive>();
         services.AddTransient<ILeaveRepository, LeaveRepository>();
         services.AddTransient<ILeaveServive, LeaveService>();
+        //services.AddTransient<IAuthenticationService, AuthenticationService>();
     }
 }

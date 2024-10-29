@@ -3,6 +3,7 @@ using System;
 using AdminHRM.Server.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminHRM.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20241028125443_UpdateIdentityEntity")]
+    partial class UpdateIdentityEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,22 +174,22 @@ namespace AdminHRM.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "349953c4-6c74-480c-a0d6-195effa9bdff",
-                            ConcurrencyStamp = "1:06:10 PM",
+                            Id = "78bf5349-c330-4e84-9ed2-69acbc477526",
+                            ConcurrencyStamp = "12:54:43 PM",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b4dcfa99-3241-4082-aed1-7216142ad0bb",
-                            ConcurrencyStamp = "1:06:10 PM",
+                            Id = "fd8a07e5-0c5c-48c6-94b0-bffa37b77636",
+                            ConcurrencyStamp = "12:54:43 PM",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "ddae5372-3476-40af-bf4f-8f5380c8241f",
-                            ConcurrencyStamp = "1:06:10 PM",
+                            Id = "a2cc107d-75d8-4396-9f54-58f00394e926",
+                            ConcurrencyStamp = "12:54:43 PM",
                             Name = "Human Resources",
                             NormalizedName = "HUMAN RESOURCES"
                         });

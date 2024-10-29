@@ -12,17 +12,13 @@ namespace AdminHRM.Server.Infrastructures;
 public interface IEmployeeRepository : IGenericRepository<Employee>
 {
     Task<List<EmployeeDto>> GetInCludeParentChild();
-
     Task<int> CountAsync();
-
     IQueryable<Employee> Query();
-
     IQueryable<Employee> AsQueryable();
-
     Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
-
     Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto);
     Task<Employee?> GetEmployeeByIdAsync(Guid id);
+    Task<Employee?> GetEmployeeByUserIdAsync(string userId);
 }
 
 public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
@@ -171,5 +167,12 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     public async Task<Employee?> GetEmployeeByIdAsync(Guid id)
     {
         return await _hrmDbContext.Employees.FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    public async Task<Employee?> GetEmployeeByUserIdAsync(string userId)
+    {
+        return await _hrmDbContext.Employees
+            .Include(e => e.User)
+            .FirstOrDefaultAsync(e => e.UserId == userId);
     }
 }

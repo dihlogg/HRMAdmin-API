@@ -14,6 +14,7 @@ public interface IEmployeeServive
     Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto);
     Task<PagedResult<EmployeeDto>> GetPagedEmployeesAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
     Task<Employee?> GetEmployeeByIdAsync(Guid id);
+    Task<EmployeeDto?> GetEmployeeByUserIdAsync(string userId);
 }
 
 public class EmployeeServive : IEmployeeServive
@@ -137,5 +138,23 @@ public class EmployeeServive : IEmployeeServive
             _logger.LogError(ex.Message);
             throw;
         }
+    }
+
+    public async Task<EmployeeDto?> GetEmployeeByUserIdAsync(string userId)
+    {
+        var employee = await _employeeRepository.GetEmployeeByUserIdAsync(userId);
+        if (employee == null) return null;
+
+        return new EmployeeDto
+        {
+            Id = employee.Id,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            JobTitle = employee.JobTitle,
+            Status = employee.Status,
+            UserId = employee.UserId,
+            UserName = employee.User.UserName,
+            Email = employee.User.Email
+        };
     }
 }
