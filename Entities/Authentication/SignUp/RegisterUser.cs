@@ -13,6 +13,6 @@ namespace AdminHRM.Server.Entities.Authentication.SignUp
 
         [Required(ErrorMessage = "Password is required")]
         public string? Password { get; set; }
-
+        public Guid? EmployeeId { get; set; }
     }
 }

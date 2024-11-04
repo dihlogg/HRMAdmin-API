@@ -4,6 +4,6 @@ namespace AdminHRM.Server.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        public Employee Employee { get; set; }
+        public IList<Employee>? Employees { get; set; }
     }
 }

@@ -12,17 +12,13 @@ namespace AdminHRM.Server.Infrastructures;
 public interface IEmployeeRepository : IGenericRepository<Employee>
 {
     Task<List<EmployeeDto>> GetInCludeParentChild();
-
     Task<int> CountAsync();
-
     IQueryable<Employee> Query();
-
     IQueryable<Employee> AsQueryable();
-
     Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
-
     Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto);
     Task<Employee?> GetEmployeeByIdAsync(Guid id);
+    Task<Employee?> GetEmployeeByUserIdAsync(string userId);
 }
 
 public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
@@ -76,8 +72,11 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     public async Task<List<EmployeeDto>> GetInCludeParentChild()
     {
         var query = _hrmDbContext.Employees
-            .AsQueryable()
-            .AsNoTracking();
+        .Include(e => e.SupperEmployee)
+        .Include(e => e.Employees)
+        .Include(e => e.SubUnits)
+        .AsNoTracking();
+
         return await query
             .Select(s => new EmployeeDto()
             {
@@ -86,18 +85,20 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
                 FirstName = s.FirstName,
                 JobTitle = s.JobTitle,
                 Status = s.Status,
+                UserName = s.User.UserName,
+                Email = s.User.Email,
                 SubUnitId = s.SubUnitId,
-                SubUnitName = s.SubUnits.SubName,
-                SupperVisor = new EmployeeParentChildDto()
+                SubUnitName = s.SubUnits != null ? s.SubUnits.SubName : null,
+                SupperVisor = s.SupperEmployee != null ? new EmployeeParentChildDto()
                 {
                     Id = s.SupperEmployee.Id,
                     FullName = s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName
-                },
-                EmployeeChildrens = s.Employees.Select(p => new EmployeeParentChildDto()
+                } : null,
+                EmployeeChildrens = s.Employees != null ? s.Employees.Select(p => new EmployeeParentChildDto()
                 {
                     Id = p.Id,
                     FullName = p.FirstName + " " + p.LastName
-                })
+                }).ToList() : new List<EmployeeParentChildDto>(),
             })
             .ToListAsync();
     }
@@ -171,5 +172,12 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     public async Task<Employee?> GetEmployeeByIdAsync(Guid id)
     {
         return await _hrmDbContext.Employees.FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    public async Task<Employee?> GetEmployeeByUserIdAsync(string userId)
+    {
+        return await _hrmDbContext.Employees
+            .Include(e => e.User)
+            .FirstOrDefaultAsync(e => e.UserId == userId);
     }
 }

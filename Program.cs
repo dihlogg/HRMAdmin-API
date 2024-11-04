@@ -3,6 +3,7 @@ using AdminHRM.Server.DataContext;
 using AdminHRM.Server.Infrastructures;
 using AdminHRM.Server.Services;
 using AdminHRM.Server.Services.Implements;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -77,6 +78,7 @@ var emailConfig = configuration
 builder.Services.AddSingleton(emailConfig);
 builder.Services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<AdminHRM.Server.Services.IAuthenticationService, AdminHRM.Server.Services.AuthenticationService>();
 
 builder.Services.AddApplicationServicesExtension();
 builder.Services.AddControllers();

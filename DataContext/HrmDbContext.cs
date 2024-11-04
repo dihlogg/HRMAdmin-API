@@ -37,19 +37,25 @@ namespace AdminHRM.Server.DataContext
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<SubUnit>().ToTable("SubUnits").HasKey(x => x.Id);
+            modelBuilder.Entity<SubUnit>()
+                .ToTable("SubUnits")
+                .HasKey(x => x.Id);
 
-            modelBuilder.Entity<Employee>().ToTable("Employees")
+            // Employee with SubUnit relationship (1-N)
+            modelBuilder.Entity<Employee>()
+                .ToTable("Employees")
                 .HasOne<SubUnit>(s => s.SubUnits)
                 .WithMany(g => g.Employees)
                 .HasForeignKey(s => s.SubUnitId);
 
+            // Employee with Supervisor relationship (self-referencing 1-N)
             modelBuilder.Entity<Employee>()
                 .HasOne(s => s.SupperEmployee)
                 .WithMany(g => g.Employees)
                 .HasForeignKey(s => s.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // IdentityUser with Employee relationship (1-1)
             modelBuilder.Entity<Employee>()
                 .HasOne(s => s.User)
                 .WithOne()
@@ -57,21 +63,15 @@ namespace AdminHRM.Server.DataContext
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Leave with Employee relationship (1-N)
             modelBuilder.Entity<Leave>()
                 .ToTable("Leaves")
                 .HasOne(l => l.Employees)
                 .WithMany(e => e.Leaves)
                 .HasForeignKey(l => l.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
-
-            // Cấu hình mối quan hệ 1-1 giữa Employee và IdentityUser
-            modelBuilder.Entity<Employee>()
-                .HasOne(e => e.User)
-                .WithOne()
-                .HasForeignKey<Employee>(e => e.UserId);
         }
+
 
         public override int SaveChanges()
         {
