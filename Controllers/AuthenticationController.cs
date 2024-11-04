@@ -1,12 +1,9 @@
-﻿using AdminHRM.Dtos;
-using AdminHRM.Server.DataContext;
+﻿using AdminHRM.Server.DataContext;
 using AdminHRM.Server.Entities;
 using AdminHRM.Server.Entities.Authentication.SignIn;
 using AdminHRM.Server.Entities.Authentication.SignUp;
-using AdminHRM.Server.Services;
 using AdminHRM.Server.Services.Implements;
 using AdminHRM.Services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -59,89 +56,14 @@ namespace AdminHRM.Server.Controllers
             return Ok(response);
         }
 
-            [HttpGet]
+        [HttpGet]
         [Route("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userManager.Users
-    .Select(user => new
-    {
-        user.Id,
-        user.UserName,
-        user.Email,
-        user.TwoFactorEnabled,
-        Employee = _identityContext.Employees
-            .Where(e => e.UserId == user.Id)
-            .Select(e => new
-            {
-                e.Id,
-                e.FirstName,
-                e.LastName,
-                e.JobTitle,
-                e.Status,
-                Supervisor = new
-                {
-                    Id = e.SupperEmployee.Id,
-                    FullName = e.SupperEmployee.FirstName + " " + e.SupperEmployee.LastName
-                },
-                EmployeeChildrens = e.Employees.Select(p => new
-                {
-                    Id = p.Id,
-                    FullName = p.FirstName + " " + p.LastName
-                }).ToList()
-            }).FirstOrDefault()
-    })
     .ToListAsync();
             return Ok(users);
         }
-
-        //[HttpPost]
-        //[Route("register")]
-        //public async Task<IActionResult> Register([FromBody] RegisterUser registerUser, string role)
-        //{
-        //    // Check user exist
-        //    var userExist = await _userManager.FindByEmailAsync(registerUser.Email);
-        //    if (userExist != null)
-        //    {
-        //        return StatusCode(StatusCodes.Status403Forbidden,
-        //            new Response { Status = "Error", Message = "User already exist!" });
-        //    }
-
-        //    // Add user in db
-        //    IdentityUser user = new()
-        //    {
-        //        Email = registerUser.Email,
-        //        SecurityStamp = Guid.NewGuid().ToString(),
-        //        UserName = registerUser.UserName,
-        //        TwoFactorEnabled = true,
-        //    };
-        //    var checkRole = await _roleManager.FindByNameAsync(role);
-        //    if (await _roleManager.RoleExistsAsync(role))
-        //    {
-        //        var result = await _userManager.CreateAsync(user, registerUser.Password);
-        //        if (!result.Succeeded)
-        //        {
-        //            return StatusCode(StatusCodes.Status500InternalServerError,
-        //                new Response { Status = "Error", Message = "User Failed to Create!" });
-        //        }
-        //        // Add role to user
-        //        await _userManager.AddToRoleAsync(user, role);
-
-        //        // Add token to verify email
-        //        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        //        var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { token, email = user.Email }, Request.Scheme);
-        //        var message = new Message(new string[] { user.Email! }, "Confirmation Email Link", confirmationLink!);
-        //        _emailService.SendEmail(message);
-
-        //        return StatusCode(StatusCodes.Status200OK,
-        //               new Response { Status = "Success", Message = $"User Created and Email Sent to {user.Email} Successfully!" });
-        //    }
-        //    else
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError,
-        //              new Response { Status = "Error", Message = "This Role Doesn't Exist!" });
-        //    }
-        //}
 
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
@@ -187,33 +109,15 @@ namespace AdminHRM.Server.Controllers
                 // Generate token with claims
                 var jwtToken = GetToken(authClaims);
 
-                // Fetch Employee details
-                var employee = await _identityContext.Employees.FirstOrDefaultAsync(e => e.UserId == user.Id);
-                if (employee == null)
-                {
-                    return NotFound("Employee not found for the user");
-                }
-
                 // Return token and Employee info
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                     expiration = jwtToken.ValidTo,
-                    employee = new
-                    {
-                        employee.EmployeeId,
-                        employee.FirstName,
-                        employee.LastName,
-                        employee.JobTitle,
-                        employee.Status,
-                        employee.SupperEmployee,
-                        employee.SubUnits.SubName,
-                    }
                 });
             }
             return Unauthorized();
         }
-
 
         [HttpPost]
         [Route("login-2FA")]

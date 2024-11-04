@@ -72,8 +72,11 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     public async Task<List<EmployeeDto>> GetInCludeParentChild()
     {
         var query = _hrmDbContext.Employees
-            .AsQueryable()
-            .AsNoTracking();
+        .Include(e => e.SupperEmployee)
+        .Include(e => e.Employees)
+        .Include(e => e.SubUnits)
+        .AsNoTracking();
+
         return await query
             .Select(s => new EmployeeDto()
             {
@@ -82,18 +85,20 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
                 FirstName = s.FirstName,
                 JobTitle = s.JobTitle,
                 Status = s.Status,
+                UserName = s.User.UserName,
+                Email = s.User.Email,
                 SubUnitId = s.SubUnitId,
-                SubUnitName = s.SubUnits.SubName,
-                SupperVisor = new EmployeeParentChildDto()
+                SubUnitName = s.SubUnits != null ? s.SubUnits.SubName : null,
+                SupperVisor = s.SupperEmployee != null ? new EmployeeParentChildDto()
                 {
                     Id = s.SupperEmployee.Id,
                     FullName = s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName
-                },
-                EmployeeChildrens = s.Employees.Select(p => new EmployeeParentChildDto()
+                } : null,
+                EmployeeChildrens = s.Employees != null ? s.Employees.Select(p => new EmployeeParentChildDto()
                 {
                     Id = p.Id,
                     FullName = p.FirstName + " " + p.LastName
-                })
+                }).ToList() : new List<EmployeeParentChildDto>(),
             })
             .ToListAsync();
     }

@@ -22,127 +22,6 @@ namespace AdminHRM.Migrations.Identity
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AdminHRM.Entities.Leave", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("CreateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("FromDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LeaveStatus")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LeaveType")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ToDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("Leave");
-                });
-
-            modelBuilder.Entity("AdminHRM.Server.Entities.Employee", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CreateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("JobTitle")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("SubUnitId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("SubUnitId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("AdminHRM.Server.Entities.SubUnit", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CreateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("SubName")
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SubUnit");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -171,22 +50,22 @@ namespace AdminHRM.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "349953c4-6c74-480c-a0d6-195effa9bdff",
-                            ConcurrencyStamp = "1:06:10 PM",
+                            Id = "7e77ff29-e56c-4c6f-83fd-adf78192385f",
+                            ConcurrencyStamp = "4:00:32 PM",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b4dcfa99-3241-4082-aed1-7216142ad0bb",
-                            ConcurrencyStamp = "1:06:10 PM",
+                            Id = "3b3fe165-65d1-43da-9e9c-8d4d3609286d",
+                            ConcurrencyStamp = "4:00:32 PM",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "ddae5372-3476-40af-bf4f-8f5380c8241f",
-                            ConcurrencyStamp = "1:06:10 PM",
+                            Id = "61641272-6575-4997-a08d-a521f541c3ad",
+                            ConcurrencyStamp = "4:00:32 PM",
                             Name = "Human Resources",
                             NormalizedName = "HUMAN RESOURCES"
                         });
@@ -362,36 +241,6 @@ namespace AdminHRM.Migrations.Identity
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AdminHRM.Entities.Leave", b =>
-                {
-                    b.HasOne("AdminHRM.Server.Entities.Employee", "Employees")
-                        .WithMany("Leaves")
-                        .HasForeignKey("EmployeeId");
-
-                    b.Navigation("Employees");
-                });
-
-            modelBuilder.Entity("AdminHRM.Server.Entities.Employee", b =>
-                {
-                    b.HasOne("AdminHRM.Server.Entities.Employee", "SupperEmployee")
-                        .WithMany("Employees")
-                        .HasForeignKey("EmployeeId");
-
-                    b.HasOne("AdminHRM.Server.Entities.SubUnit", "SubUnits")
-                        .WithMany("Employees")
-                        .HasForeignKey("SubUnitId");
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("SubUnits");
-
-                    b.Navigation("SupperEmployee");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -441,18 +290,6 @@ namespace AdminHRM.Migrations.Identity
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AdminHRM.Server.Entities.Employee", b =>
-                {
-                    b.Navigation("Employees");
-
-                    b.Navigation("Leaves");
-                });
-
-            modelBuilder.Entity("AdminHRM.Server.Entities.SubUnit", b =>
-                {
-                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }
