@@ -112,6 +112,132 @@ namespace AdminHRM.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("GetLeaveDashboardCards")]
+        public async Task<IActionResult> GetLeaveDashboardCards()
+        {
+            try
+            {
+                var data = await _leaveService.GetDashboardCardsAsync();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("PostLeaveDashboardCard")]
+        public async Task<IActionResult> PostLeaveDashboardCard(LeaveDashboardCreateDto leaveDashboardCreateDto)
+        {
+            try
+            {
+                var data = await _leaveService.AddDashboardCardsAsync(leaveDashboardCreateDto);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("PutLeaveDashboardCard")]
+        public async Task<IActionResult> PutLeaveDashboardCard(LeaveDashboardCreateDto leaveDashboardCreateDto)
+        {
+            try
+            {
+                var data = await _leaveService.EditDashboardCardsAsync(leaveDashboardCreateDto);
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteLeaveDashboardCard/{cardId}")]
+        public async Task<IActionResult> DeleteLeaveDashboardCard(string cardId)
+        {
+            try
+            {
+                var data = await _leaveService.RemoveDashboardCardsAsync(cardId);
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("GetRequestReasons")]
+        public async Task<IActionResult> GetRequestReasons()
+        {
+            try
+            {
+                var data = await _leaveService.GetRequestReasonAsync();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("PostRequestReason")]
+        public async Task<IActionResult> PostRequestReason(LeaveReasonDto leaveReasonDto)
+        {
+            try
+            {
+                var data = await _leaveService.AddRequestReasonAsync(leaveReasonDto);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("PutRequestReason")]
+        public async Task<IActionResult> PutRequestReason(LeaveReasonDto leaveReasonDto)
+        {
+            try
+            {
+                var data = await _leaveService.EditRequestReasonAsync(leaveReasonDto);
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteRequestReason/{reasonId}")]
+        public async Task<IActionResult> DeleteRequestReason(string reasonId)
+        {
+            try
+            {
+                var data = await _leaveService.RemoveRequestReasonAsync(reasonId);
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("v1/dashboard/cards")]
         public async Task<IActionResult> Cards()
         {

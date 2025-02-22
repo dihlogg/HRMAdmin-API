@@ -32,6 +32,11 @@ namespace AdminHRM.Server.DataContext
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<SubUnit> SubUnits { get; set; }
         public virtual DbSet<Leave> Leaves { get; set; }
+        public virtual DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public virtual DbSet<DashboardCard> DashboardCards { get; set; }
+        public virtual DbSet<RequestReason> RequestReason { get; set; }
+        public virtual DbSet<RequestStatus> RequestStatus { get; set; }
+        public virtual DbSet<RequestType> RequestType { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -70,6 +75,32 @@ namespace AdminHRM.Server.DataContext
                 .WithMany(e => e.Leaves)
                 .HasForeignKey(l => l.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DashboardCard>()
+                .HasKey(c => c.CardId);
+
+            // Card with LeaveRequest relationship (1-N)
+            modelBuilder.Entity<LeaveRequest>()
+                .HasOne(l => l.Card)
+                .WithMany(c => c.LeaveRequests)
+                .HasForeignKey(l => l.CardId)
+                .HasPrincipalKey(c => c.CardId) // Liên kết với CardId thay vì Id
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LeaveRequest>()
+                .HasOne(l => l.ApprovedUser)
+                .WithMany(e => e.ApprovedRequests)
+                .HasForeignKey(l => l.ApprovedId)
+                .IsRequired(false)  // Cho phép giá trị null
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<LeaveRequest>()
+                .HasOne(l => l.Suppervisor)
+                .WithMany(e => e.SuppervisedRequests)
+                .HasForeignKey(l => l.SuppervisorId)
+                .IsRequired(false)  // Cho phép giá trị null
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
 

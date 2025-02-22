@@ -18,5 +18,8 @@ namespace AdminHRM.Server.Entities
         public string? UserId { get; set; }
         public IdentityUser? User { get; set; }
         public IList<Leave> Leaves { get; set; }
+        public ICollection<LeaveRequest> ApprovedRequests { get; set; }
+        public ICollection<LeaveRequest> SuppervisedRequests { get; set; }
+        public ICollection<RequestInformUser> InformRequests { get; set; }
     }
 }

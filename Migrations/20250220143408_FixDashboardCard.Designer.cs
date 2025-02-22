@@ -3,6 +3,7 @@ using System;
 using AdminHRM.Server.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminHRM.Migrations
 {
     [DbContext(typeof(HrmDbContext))]
-    partial class HrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250220143408_FixDashboardCard")]
+    partial class FixDashboardCard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,23 +216,11 @@ namespace AdminHRM.Migrations
                     b.Property<string>("ReasonId")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("CreateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer");
 
                     b.Property<string>("ReasonName")
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ReasonId");
 
@@ -241,23 +232,11 @@ namespace AdminHRM.Migrations
                     b.Property<string>("StatusId")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("CreateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer");
 
                     b.Property<string>("StatusName")
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("StatusId");
 
@@ -272,23 +251,11 @@ namespace AdminHRM.Migrations
                     b.Property<string>("CardId")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("CreateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer");
 
                     b.Property<string>("TypeName")
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("RequestId");
 
