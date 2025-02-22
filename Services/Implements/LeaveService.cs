@@ -34,23 +34,26 @@ public interface ILeaveServive
 public class LeaveService : ILeaveServive
 {
     private readonly ILogger<LeaveService> _logger;
+    private readonly IMapper _mapper;
     private readonly ILeaveRepository _leaveRepository;
     private readonly ILeaveDashboardCardRepository _leaveDashboardCardRepository;
     private readonly IRequestReasonRepository _requestReasonRepository;
-    private readonly IMapper _mapper;
+    private readonly IRequestStatusRepository _requestStatusRepository;
 
 
     public LeaveService(ILeaveRepository leaveRepository, 
         ILogger<LeaveService> logger, 
         IMapper mapper, 
         ILeaveDashboardCardRepository leaveDashboardCardRepository, 
-        IRequestReasonRepository requestReasonRepository)
+        IRequestReasonRepository requestReasonRepository,
+        IRequestStatusRepository requestStatusRepository)
     {
         _leaveRepository = leaveRepository;
         _logger = logger;
         _mapper = mapper;
         _leaveDashboardCardRepository = leaveDashboardCardRepository;
         _requestReasonRepository = requestReasonRepository;
+        _requestStatusRepository = requestStatusRepository;
     }
     public async Task<List<LeaveDto>> GetLeaveDtosAsync()
     {
@@ -246,23 +249,64 @@ public class LeaveService : ILeaveServive
         }
     }
 
-    public Task<List<LeaveStatusDto>> GetRequestStatusAsync()
+    public async Task<List<LeaveStatusDto>> GetRequestStatusAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var data = await _requestStatusRepository.GetAllAsync();
+            return _mapper.Map<List<LeaveStatusDto>>(data);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
     }
 
-    public Task<bool> AddRequestStatusAsync(LeaveStatusDto leaveStatusDto)
+    public async Task<bool> AddRequestStatusAsync(LeaveStatusDto leaveStatusDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var info = _mapper.Map<RequestStatus>(leaveStatusDto);
+            return await _requestStatusRepository.AddAsync(info);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
     }
 
-    public Task<bool?> EditRequestStatusAsync(LeaveStatusDto leaveStatusDto)
+    public async Task<bool?> EditRequestStatusAsync(LeaveStatusDto leaveStatusDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var statusInfo = await _requestStatusRepository.GetByStatusIdAsync(leaveStatusDto.StatusId);
+            if (statusInfo == null)
+            {
+                return null;
+            }
+            var statusUpdate = _mapper.Map<RequestStatus>(leaveStatusDto);
+            var result = await _requestStatusRepository.UpdateAsync(statusUpdate);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
     }
 
-    public Task<bool?> RemoveRequestStatusAsync(string statusId)
+    public async Task<bool?> RemoveRequestStatusAsync(string statusId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await _requestStatusRepository.DeleteByStatusId(statusId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
     }
 }

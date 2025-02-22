@@ -237,6 +237,68 @@ namespace AdminHRM.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("GetRequestStatuses")]
+        public async Task<IActionResult> GetRequestStatuses()
+        {
+            try
+            {
+                var data = await _leaveService.GetRequestStatusAsync();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("PostRequestStatus")]
+        public async Task<IActionResult> PostRequestStatus(LeaveStatusDto leaveStatusDto)
+        {
+            try
+            {
+                var data = await _leaveService.AddRequestStatusAsync(leaveStatusDto);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("PutRequestStatus")]
+        public async Task<IActionResult> PutRequestStatus(LeaveStatusDto leaveStatusDto)
+        {
+            try
+            {
+                var data = await _leaveService.EditRequestStatusAsync(leaveStatusDto);
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteRequestStatus/{statusId}")]
+        public async Task<IActionResult> DeleteRequestStatus(string statusId)
+        {
+            try
+            {
+                var data = await _leaveService.RemoveRequestStatusAsync(statusId);
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet("v1/dashboard/cards")]
         public async Task<IActionResult> Cards()

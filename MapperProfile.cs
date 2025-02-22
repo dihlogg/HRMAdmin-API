@@ -46,6 +46,11 @@ namespace AdminHRM.Server
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
             CreateMap<LeaveReasonDto, RequestReason>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+
+            CreateMap<RequestStatus, LeaveStatusDto>().ReverseMap()
+               .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+            CreateMap<LeaveStatusDto, RequestStatus>().ReverseMap()
+                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
         }
     }
 }
