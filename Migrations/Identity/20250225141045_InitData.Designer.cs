@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminHRM.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20250113101335_InitialIdentityContext")]
-    partial class InitialIdentityContext
+    [Migration("20250225141045_InitData")]
+    partial class InitData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,22 +53,22 @@ namespace AdminHRM.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "bdf2cac0-f62c-4fb5-8074-6ae16c7a1daa",
-                            ConcurrencyStamp = "10:13:35 AM",
+                            Id = "baba0953-fb1b-45ef-aeca-fd660e38cfb4",
+                            ConcurrencyStamp = "2:10:45 PM",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "a4e97957-c0ff-4e51-a077-e2dee802a748",
-                            ConcurrencyStamp = "10:13:35 AM",
+                            Id = "6eccb948-7bd5-4953-be34-5881aa86f7de",
+                            ConcurrencyStamp = "2:10:45 PM",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "25d057e5-ac75-4511-85e8-c42df1749322",
-                            ConcurrencyStamp = "10:13:35 AM",
+                            Id = "c907bf8d-3059-41f6-82ad-0edba9036648",
+                            ConcurrencyStamp = "2:10:45 PM",
                             Name = "Human Resources",
                             NormalizedName = "HUMAN RESOURCES"
                         });

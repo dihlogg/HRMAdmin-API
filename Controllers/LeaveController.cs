@@ -189,11 +189,11 @@ namespace AdminHRM.Server.Controllers
             }
         }
         [HttpPost("PostRequestReason")]
-        public async Task<IActionResult> PostRequestReason(LeaveReasonDto leaveReasonDto)
+        public async Task<IActionResult> PostRequestReason(LeaveReasonCreateDto leaveReasonCreateDto)
         {
             try
             {
-                var data = await _leaveService.AddRequestReasonAsync(leaveReasonDto);
+                var data = await _leaveService.AddRequestReasonAsync(leaveReasonCreateDto);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -220,12 +220,12 @@ namespace AdminHRM.Server.Controllers
             }
         }
 
-        [HttpDelete("DeleteRequestReason/{reasonId}")]
-        public async Task<IActionResult> DeleteRequestReason(string reasonId)
+        [HttpDelete("DeleteRequestReason/{id}")]
+        public async Task<IActionResult> DeleteRequestReason(Guid id)
         {
             try
             {
-                var data = await _leaveService.RemoveRequestReasonAsync(reasonId);
+                var data = await _leaveService.RemoveRequestReasonAsync(id);
                 if (data == null)
                 {
                     return NotFound();

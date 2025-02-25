@@ -125,38 +125,12 @@ public class LeaveDashboardCardRepository : GenericRepository<DashboardCard>, IL
 
 public interface IRequestReasonRepository : IGenericRepository<RequestReason>
 {
-    Task<bool?> DeleteByReasonId(string reasonId);
-    Task<RequestReason?> GetByReasonIdAsync(string reasonId);
 }
 
-public class RequestReasonRepository : GenericRepositoryWithoutBase<RequestReason>, IRequestReasonRepository
+public class RequestReasonRepository : GenericRepository<RequestReason>, IRequestReasonRepository
 {
     public RequestReasonRepository(HrmDbContext hrmDbContext) : base(hrmDbContext)
     {
-    }
-    public async Task<bool?> DeleteByReasonId(string reasonId)
-    {
-        try
-        {
-            var entity = await _hrmDbContext.RequestReason
-                .FirstOrDefaultAsync(x => x.ReasonId == reasonId);
-
-            if (entity == null)
-                return false;
-
-            _hrmDbContext.RequestReason.Remove(entity);
-            await _hrmDbContext.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
-    public async Task<RequestReason?> GetByReasonIdAsync(string reasonId)
-    {
-        return await _hrmDbContext.RequestReason.FirstOrDefaultAsync(c => c.ReasonId == reasonId);
     }
 }
 public interface IRequestStatusRepository : IGenericRepository<RequestStatus>
