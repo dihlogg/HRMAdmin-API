@@ -37,6 +37,7 @@ namespace AdminHRM.Server.DataContext
         public virtual DbSet<RequestReason> RequestReason { get; set; }
         public virtual DbSet<RequestStatus> RequestStatus { get; set; }
         public virtual DbSet<RequestType> RequestType { get; set; }
+        public virtual DbSet<RequestInformUser> RequestInformUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +45,10 @@ namespace AdminHRM.Server.DataContext
 
             modelBuilder.Entity<SubUnit>()
                 .ToTable("SubUnits")
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<RequestInformUser>()
+                .ToTable("RequestInformUsers")
                 .HasKey(x => x.Id);
 
             // Employee with SubUnit relationship (1-N)
@@ -101,6 +106,19 @@ namespace AdminHRM.Server.DataContext
                 .HasForeignKey(l => l.SuppervisorId)
                 .IsRequired(false)  // Cho phép giá trị null
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RequestInformUser>()
+                .HasOne(r => r.Employees)
+                .WithMany(e => e.InformRequests) // Một nhân viên có nhiều RequestInformUser
+                .HasForeignKey(r => r.EmployeeId) // Khóa ngoại liên kết với EmployeeId
+                .OnDelete(DeleteBehavior.Cascade); // Xóa RequestInformUser khi Employee bị xóa
+
+            modelBuilder.Entity<RequestInformUser>()
+                .HasOne(r => r.LeaveRequest)
+                .WithMany(l => l.InformUsers) // Một LeaveRequest có nhiều RequestInformUser
+                .HasForeignKey(r => r.RequestId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
 
 

@@ -42,6 +42,8 @@ namespace AdminHRM.Server
             CreateMap<LeaveDashboardCardDto, DashboardCard>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
 
+            CreateMap<LeaveReasonCreateDto, RequestReason>().ReverseMap()
+              .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
             CreateMap<RequestReason, LeaveReasonDto>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
             CreateMap<LeaveReasonDto, RequestReason>().ReverseMap()

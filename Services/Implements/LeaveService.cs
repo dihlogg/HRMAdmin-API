@@ -22,9 +22,9 @@ public interface ILeaveServive
     Task<bool?> EditDashboardCardsAsync(LeaveDashboardCreateDto leaveDashboardCreateDto);
     Task<bool?> RemoveDashboardCardsAsync(string cardId);
     Task<List<LeaveReasonDto>> GetRequestReasonAsync();
-    Task<bool> AddRequestReasonAsync(LeaveReasonDto leaveReasonDto);
+    Task<bool> AddRequestReasonAsync(LeaveReasonCreateDto leaveReasonCreateDto);
     Task<bool?> EditRequestReasonAsync(LeaveReasonDto leaveReasonDto);
-    Task<bool?> RemoveRequestReasonAsync(string reasonId);
+    Task<bool?> RemoveRequestReasonAsync(Guid id);
     Task<List<LeaveStatusDto>> GetRequestStatusAsync();
     Task<bool> AddRequestStatusAsync(LeaveStatusDto leaveStatusDto);
     Task<bool?> EditRequestStatusAsync(LeaveStatusDto leaveStatusDto);
@@ -203,11 +203,11 @@ public class LeaveService : ILeaveServive
         }
     }
 
-    public async Task<bool> AddRequestReasonAsync(LeaveReasonDto leaveReasonDto)
+    public async Task<bool> AddRequestReasonAsync(LeaveReasonCreateDto leaveReasonCreateDto)
     {
         try
         {
-            var info = _mapper.Map<RequestReason>(leaveReasonDto);
+            var info = _mapper.Map<RequestReason>(leaveReasonCreateDto);
             return await _requestReasonRepository.AddAsync(info);
         }
         catch (Exception ex)
@@ -221,7 +221,7 @@ public class LeaveService : ILeaveServive
     {
         try
         {
-            var reasonInfo = await _requestReasonRepository.GetByReasonIdAsync(leaveReasonDto.ReasonId);
+            var reasonInfo = await _requestReasonRepository.GetByIdAsync(leaveReasonDto.Id);
             if (reasonInfo == null)
             {
                 return null;
@@ -236,11 +236,11 @@ public class LeaveService : ILeaveServive
             throw;
         }
     }
-    public async Task<bool?> RemoveRequestReasonAsync(string reasonId)
+    public async Task<bool?> RemoveRequestReasonAsync(Guid id)
     {
         try
         {
-            return await _requestReasonRepository.DeleteByReasonId(reasonId);
+            return await _requestReasonRepository.DeleteByKey(id);
         }
         catch (Exception ex)
         {

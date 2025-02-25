@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdminHRM.Migrations
 {
     [DbContext(typeof(HrmDbContext))]
-    [Migration("20250222103901_UpdateMoreEntitesLeave")]
-    partial class UpdateMoreEntitesLeave
+    [Migration("20250225141014_InitData")]
+    partial class InitData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,9 +136,8 @@ namespace AdminHRM.Migrations
                     b.Property<string>("ReasonId")
                         .HasColumnType("text");
 
-                    b.Property<string>("RequestReasonReasonId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("RequestReasonId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("RequestStatusStatusId")
                         .IsRequired()
@@ -172,7 +171,7 @@ namespace AdminHRM.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.HasIndex("RequestReasonReasonId");
+                    b.HasIndex("RequestReasonId");
 
                     b.HasIndex("RequestStatusStatusId");
 
@@ -185,36 +184,42 @@ namespace AdminHRM.Migrations
 
             modelBuilder.Entity("AdminHRM.Entities.RequestInformUser", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EmployeeId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("EmployeeId1")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("LeaveId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("LeaveRequestId")
+                    b.Property<Guid?>("CreateBy")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("EmployeeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("RequestId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UpdateBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId1");
+                    b.HasIndex("EmployeeId");
 
-                    b.HasIndex("LeaveRequestId");
+                    b.HasIndex("RequestId");
 
-                    b.ToTable("RequestInformUser");
+                    b.ToTable("RequestInformUsers", (string)null);
                 });
 
             modelBuilder.Entity("AdminHRM.Entities.RequestReason", b =>
                 {
-                    b.Property<string>("ReasonId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("CreateBy")
                         .HasColumnType("uuid");
@@ -234,7 +239,7 @@ namespace AdminHRM.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("ReasonId");
+                    b.HasKey("Id");
 
                     b.ToTable("RequestReason");
                 });
@@ -455,7 +460,7 @@ namespace AdminHRM.Migrations
 
                     b.HasOne("AdminHRM.Entities.RequestReason", "RequestReason")
                         .WithMany("LeaveRequests")
-                        .HasForeignKey("RequestReasonReasonId")
+                        .HasForeignKey("RequestReasonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -491,19 +496,17 @@ namespace AdminHRM.Migrations
 
             modelBuilder.Entity("AdminHRM.Entities.RequestInformUser", b =>
                 {
-                    b.HasOne("AdminHRM.Server.Entities.Employee", "Employee")
+                    b.HasOne("AdminHRM.Server.Entities.Employee", "Employees")
                         .WithMany("InformRequests")
-                        .HasForeignKey("EmployeeId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("AdminHRM.Entities.LeaveRequest", "LeaveRequest")
                         .WithMany("InformUsers")
-                        .HasForeignKey("LeaveRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("Employee");
+                    b.Navigation("Employees");
 
                     b.Navigation("LeaveRequest");
                 });

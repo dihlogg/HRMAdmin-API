@@ -164,9 +164,9 @@ namespace AdminHRM.Migrations.Identity
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3b3fe165-65d1-43da-9e9c-8d4d3609286d", "4:00:32 PM", "User", "USER" },
-                    { "61641272-6575-4997-a08d-a521f541c3ad", "4:00:32 PM", "Human Resources", "HUMAN RESOURCES" },
-                    { "7e77ff29-e56c-4c6f-83fd-adf78192385f", "4:00:32 PM", "Admin", "ADMIN" }
+                    { "6eccb948-7bd5-4953-be34-5881aa86f7de", "2:10:45 PM", "User", "USER" },
+                    { "baba0953-fb1b-45ef-aeca-fd660e38cfb4", "2:10:45 PM", "Admin", "ADMIN" },
+                    { "c907bf8d-3059-41f6-82ad-0edba9036648", "2:10:45 PM", "Human Resources", "HUMAN RESOURCES" }
                 });
 
             migrationBuilder.CreateIndex(
