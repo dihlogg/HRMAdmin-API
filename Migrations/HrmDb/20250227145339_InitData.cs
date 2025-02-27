@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AdminHRM.Migrations
+namespace AdminHRM.Migrations.HrmDb
 {
     /// <inheritdoc />
     public partial class InitData : Migration
@@ -56,7 +56,7 @@ namespace AdminHRM.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RequestReason",
+                name: "RequestReasons",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -69,14 +69,14 @@ namespace AdminHRM.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RequestReason", x => x.Id);
+                    table.PrimaryKey("PK_RequestReasons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RequestStatus",
+                name: "RequestStatuses",
                 columns: table => new
                 {
-                    StatusId = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     StatusName = table.Column<string>(type: "text", nullable: true),
                     DisplayOrder = table.Column<int>(type: "integer", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -86,7 +86,7 @@ namespace AdminHRM.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RequestStatus", x => x.StatusId);
+                    table.PrimaryKey("PK_RequestStatuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -106,10 +106,10 @@ namespace AdminHRM.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RequestType",
+                name: "RequestTypes",
                 columns: table => new
                 {
-                    RequestId = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TypeName = table.Column<string>(type: "text", nullable: true),
                     DisplayOrder = table.Column<int>(type: "integer", nullable: false),
                     CardId = table.Column<string>(type: "text", nullable: true),
@@ -120,9 +120,9 @@ namespace AdminHRM.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RequestType", x => x.RequestId);
+                    table.PrimaryKey("PK_RequestTypes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RequestType_DashboardCards_CardId",
+                        name: "FK_RequestTypes_DashboardCards_CardId",
                         column: x => x.CardId,
                         principalTable: "DashboardCards",
                         principalColumn: "CardId");
@@ -172,8 +172,7 @@ namespace AdminHRM.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    LeaveId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RequestTypeId = table.Column<string>(type: "text", nullable: false),
+                    RequestTypeId = table.Column<Guid>(type: "uuid", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DetailReason = table.Column<string>(type: "text", nullable: true),
@@ -183,7 +182,7 @@ namespace AdminHRM.Migrations
                     ReasonId = table.Column<string>(type: "text", nullable: true),
                     StatusId = table.Column<string>(type: "text", nullable: true),
                     RequestReasonId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RequestStatusStatusId = table.Column<string>(type: "text", nullable: false),
+                    RequestStatusId = table.Column<Guid>(type: "uuid", nullable: false),
                     CardId = table.Column<string>(type: "text", nullable: true),
                     SupervisorId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -213,48 +212,21 @@ namespace AdminHRM.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_LeaveRequests_RequestReason_RequestReasonId",
+                        name: "FK_LeaveRequests_RequestReasons_RequestReasonId",
                         column: x => x.RequestReasonId,
-                        principalTable: "RequestReason",
+                        principalTable: "RequestReasons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LeaveRequests_RequestStatus_RequestStatusStatusId",
-                        column: x => x.RequestStatusStatusId,
-                        principalTable: "RequestStatus",
-                        principalColumn: "StatusId",
+                        name: "FK_LeaveRequests_RequestStatuses_RequestStatusId",
+                        column: x => x.RequestStatusId,
+                        principalTable: "RequestStatuses",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LeaveRequests_RequestType_RequestTypeId",
+                        name: "FK_LeaveRequests_RequestTypes_RequestTypeId",
                         column: x => x.RequestTypeId,
-                        principalTable: "RequestType",
-                        principalColumn: "RequestId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Leaves",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FromDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ToDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LeaveStatus = table.Column<string>(type: "text", nullable: true),
-                    LeaveType = table.Column<string>(type: "text", nullable: true),
-                    Comment = table.Column<string>(type: "text", nullable: true),
-                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreateBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdateBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Leaves", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Leaves_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employees",
+                        principalTable: "RequestTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -320,9 +292,9 @@ namespace AdminHRM.Migrations
                 column: "RequestReasonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LeaveRequests_RequestStatusStatusId",
+                name: "IX_LeaveRequests_RequestStatusId",
                 table: "LeaveRequests",
-                column: "RequestStatusStatusId");
+                column: "RequestStatusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LeaveRequests_RequestTypeId",
@@ -335,11 +307,6 @@ namespace AdminHRM.Migrations
                 column: "SuppervisorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Leaves_EmployeeId",
-                table: "Leaves",
-                column: "EmployeeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RequestInformUsers_EmployeeId",
                 table: "RequestInformUsers",
                 column: "EmployeeId");
@@ -350,17 +317,14 @@ namespace AdminHRM.Migrations
                 column: "RequestId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RequestType_CardId",
-                table: "RequestType",
+                name: "IX_RequestTypes_CardId",
+                table: "RequestTypes",
                 column: "CardId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Leaves");
-
             migrationBuilder.DropTable(
                 name: "RequestInformUsers");
 
@@ -371,13 +335,13 @@ namespace AdminHRM.Migrations
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "RequestReason");
+                name: "RequestReasons");
 
             migrationBuilder.DropTable(
-                name: "RequestStatus");
+                name: "RequestStatuses");
 
             migrationBuilder.DropTable(
-                name: "RequestType");
+                name: "RequestTypes");
 
             migrationBuilder.DropTable(
                 name: "IdentityUser");
