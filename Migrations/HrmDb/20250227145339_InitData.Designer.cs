@@ -3,17 +3,20 @@ using System;
 using AdminHRM.Server.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AdminHRM.Migrations
+namespace AdminHRM.Migrations.HrmDb
 {
     [DbContext(typeof(HrmDbContext))]
-    partial class HrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250227145339_InitData")]
+    partial class InitData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,49 +60,6 @@ namespace AdminHRM.Migrations
                     b.ToTable("DashboardCards");
                 });
 
-            modelBuilder.Entity("AdminHRM.Entities.Leave", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("CreateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("FromDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LeaveStatus")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LeaveType")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ToDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("Leaves", (string)null);
-                });
-
             modelBuilder.Entity("AdminHRM.Entities.LeaveRequest", b =>
                 {
                     b.Property<Guid>("Id")
@@ -127,22 +87,17 @@ namespace AdminHRM.Migrations
                     b.Property<DateTime?>("ExpectApprove")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("LeaveId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("ReasonId")
                         .HasColumnType("text");
 
                     b.Property<Guid>("RequestReasonId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("RequestStatusStatusId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("RequestStatusId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("RequestTypeId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("RequestTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
@@ -170,7 +125,7 @@ namespace AdminHRM.Migrations
 
                     b.HasIndex("RequestReasonId");
 
-                    b.HasIndex("RequestStatusStatusId");
+                    b.HasIndex("RequestStatusId");
 
                     b.HasIndex("RequestTypeId");
 
@@ -238,13 +193,14 @@ namespace AdminHRM.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequestReason");
+                    b.ToTable("RequestReasons", (string)null);
                 });
 
             modelBuilder.Entity("AdminHRM.Entities.RequestStatus", b =>
                 {
-                    b.Property<string>("StatusId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("CreateBy")
                         .HasColumnType("uuid");
@@ -264,15 +220,16 @@ namespace AdminHRM.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("StatusId");
+                    b.HasKey("Id");
 
-                    b.ToTable("RequestStatus");
+                    b.ToTable("RequestStatuses", (string)null);
                 });
 
             modelBuilder.Entity("AdminHRM.Entities.RequestType", b =>
                 {
-                    b.Property<string>("RequestId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CardId")
                         .HasColumnType("text");
@@ -295,11 +252,11 @@ namespace AdminHRM.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("RequestId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("RequestType");
+                    b.ToTable("RequestTypes", (string)null);
                 });
 
             modelBuilder.Entity("AdminHRM.Server.Entities.Employee", b =>
@@ -433,16 +390,6 @@ namespace AdminHRM.Migrations
                     b.ToTable("IdentityUser");
                 });
 
-            modelBuilder.Entity("AdminHRM.Entities.Leave", b =>
-                {
-                    b.HasOne("AdminHRM.Server.Entities.Employee", "Employees")
-                        .WithMany("Leaves")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Employees");
-                });
-
             modelBuilder.Entity("AdminHRM.Entities.LeaveRequest", b =>
                 {
                     b.HasOne("AdminHRM.Server.Entities.Employee", "ApprovedUser")
@@ -463,7 +410,7 @@ namespace AdminHRM.Migrations
 
                     b.HasOne("AdminHRM.Entities.RequestStatus", "RequestStatus")
                         .WithMany("LeaveRequests")
-                        .HasForeignKey("RequestStatusStatusId")
+                        .HasForeignKey("RequestStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -574,8 +521,6 @@ namespace AdminHRM.Migrations
                     b.Navigation("Employees");
 
                     b.Navigation("InformRequests");
-
-                    b.Navigation("Leaves");
 
                     b.Navigation("SuppervisedRequests");
                 });

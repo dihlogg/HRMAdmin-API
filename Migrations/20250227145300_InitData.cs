@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace AdminHRM.Migrations.Identity
+namespace AdminHRM.Migrations
 {
     /// <inheritdoc />
     public partial class InitData : Migration
@@ -164,9 +164,9 @@ namespace AdminHRM.Migrations.Identity
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6eccb948-7bd5-4953-be34-5881aa86f7de", "2:10:45 PM", "User", "USER" },
-                    { "baba0953-fb1b-45ef-aeca-fd660e38cfb4", "2:10:45 PM", "Admin", "ADMIN" },
-                    { "c907bf8d-3059-41f6-82ad-0edba9036648", "2:10:45 PM", "Human Resources", "HUMAN RESOURCES" }
+                    { "20aadfbe-bbbd-47d7-ae44-cb697bed78bb", "2:52:59 PM", "Human Resources", "HUMAN RESOURCES" },
+                    { "a5fd8788-4e2d-4797-b112-7c72e9ce5a16", "2:52:59 PM", "Admin", "ADMIN" },
+                    { "f14d097e-69ec-4c7a-8cdc-6fa0882ead97", "2:52:59 PM", "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(

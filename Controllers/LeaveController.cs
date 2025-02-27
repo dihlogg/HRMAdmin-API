@@ -21,98 +21,6 @@ namespace AdminHRM.Server.Controllers
             _leaveService = leaveService;
         }
 
-        [HttpGet("GetLeaves")]
-        public async Task<IActionResult> GetLeaves()
-        {
-            try
-            {
-                var data = await _leaveService.GetLeaveDtosAsync();
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("PostLeave")]
-        public async Task<IActionResult> PostLeave(AdminHRM.Dtos.Leaves.LeaveCreateDto leaveCreateDto)
-        {
-            try
-            {
-                var data = await _leaveService.AddLeaveAsync(leaveCreateDto);
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("PutLeave")]
-        public async Task<IActionResult> PutLeave(LeaveDto leaveDto)
-        {
-            try
-            {
-                var data = await _leaveService.EditLeaveAsync(leaveDto);
-                if (data == null)
-                {
-                    return NotFound();
-                }
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("DeleteLeave/{id}")]
-        public async Task<IActionResult> DeleteLeave(Guid id)
-        {
-            try
-            {
-                var data = await _leaveService.RemoveLeaveDtosAsync(id);
-                if (data == null)
-                {
-                    return NotFound();
-                }
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("SearchLeaves")]
-        public async Task<IActionResult> SearchLeaves([FromQuery] DateTime? fromDate,
-            [FromQuery] DateTime? toDate,
-            [FromQuery] string? leaveType,
-            [FromQuery] string? leaveStatus,
-            [FromQuery] string? employeeName,
-            [FromQuery] string? subName)
-        {
-            try
-            {
-                var searchLeaveDto = new SearchLeaveDto
-                {
-                    FromDate = fromDate,
-                    ToDate = toDate,
-                    LeaveType = leaveType,
-                    LeaveStatus = leaveStatus,
-                    EmployeeName = employeeName,
-                    SubName = subName
-                };
-                var data = await _leaveService.SearchLeaveDtosAsync(searchLeaveDto);
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpGet("GetLeaveDashboardCards")]
         public async Task<IActionResult> GetLeaveDashboardCards()
         {
@@ -251,11 +159,11 @@ namespace AdminHRM.Server.Controllers
             }
         }
         [HttpPost("PostRequestStatus")]
-        public async Task<IActionResult> PostRequestStatus(LeaveStatusDto leaveStatusDto)
+        public async Task<IActionResult> PostRequestStatus(LeaveStatusCreateDto leaveStatusCreateDto)
         {
             try
             {
-                var data = await _leaveService.AddRequestStatusAsync(leaveStatusDto);
+                var data = await _leaveService.AddRequestStatusAsync(leaveStatusCreateDto);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -282,12 +190,74 @@ namespace AdminHRM.Server.Controllers
             }
         }
 
-        [HttpDelete("DeleteRequestStatus/{statusId}")]
-        public async Task<IActionResult> DeleteRequestStatus(string statusId)
+        [HttpDelete("DeleteRequestStatus/{id}")]
+        public async Task<IActionResult> DeleteRequestStatus(Guid id)
         {
             try
             {
-                var data = await _leaveService.RemoveRequestStatusAsync(statusId);
+                var data = await _leaveService.RemoveRequestStatusAsync(id);
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("GetRequestTypes")]
+        public async Task<IActionResult> GetRequestTypes()
+        {
+            try
+            {
+                var data = await _leaveService.GetRequestTypesAsync();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("PostRequestType")]
+        public async Task<IActionResult> PostRequestType(RequestTypeCreateDto requestTypeCreateDto)
+        {
+            try
+            {
+                var data = await _leaveService.AddRequestTypeAsync(requestTypeCreateDto);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("PutRequestType")]
+        public async Task<IActionResult> PutRequestType(RequestTypeDto requestTypeDto)
+        {
+            try
+            {
+                var data = await _leaveService.EditRequestTypeAsync(requestTypeDto);
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteRequestType/{id}")]
+        public async Task<IActionResult> DeleteRequestType(Guid id)
+        {
+            try
+            {
+                var data = await _leaveService.RemoveRequestTypeAsync(id);
                 if (data == null)
                 {
                     return NotFound();

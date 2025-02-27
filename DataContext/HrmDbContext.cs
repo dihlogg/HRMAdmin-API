@@ -31,12 +31,11 @@ namespace AdminHRM.Server.DataContext
 
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<SubUnit> SubUnits { get; set; }
-        public virtual DbSet<Leave> Leaves { get; set; }
         public virtual DbSet<LeaveRequest> LeaveRequests { get; set; }
         public virtual DbSet<DashboardCard> DashboardCards { get; set; }
-        public virtual DbSet<RequestReason> RequestReason { get; set; }
-        public virtual DbSet<RequestStatus> RequestStatus { get; set; }
-        public virtual DbSet<RequestType> RequestType { get; set; }
+        public virtual DbSet<RequestReason> RequestReasons { get; set; }
+        public virtual DbSet<RequestStatus> RequestStatuses { get; set; }
+        public virtual DbSet<RequestType> RequestTypes { get; set; }
         public virtual DbSet<RequestInformUser> RequestInformUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -50,6 +49,21 @@ namespace AdminHRM.Server.DataContext
             modelBuilder.Entity<RequestInformUser>()
                 .ToTable("RequestInformUsers")
                 .HasKey(x => x.Id);
+
+            modelBuilder.Entity<RequestType>()
+               .ToTable("RequestTypes")
+               .HasKey(x => x.Id);
+
+            modelBuilder.Entity<RequestReason>()
+               .ToTable("RequestReasons")
+               .HasKey(x => x.Id);
+
+            modelBuilder.Entity<RequestStatus>()
+               .ToTable("RequestStatuses")
+               .HasKey(x => x.Id);
+
+            modelBuilder.Entity<DashboardCard>()
+                .HasKey(c => c.CardId);
 
             // Employee with SubUnit relationship (1-N)
             modelBuilder.Entity<Employee>()
@@ -72,17 +86,6 @@ namespace AdminHRM.Server.DataContext
                 .HasForeignKey<Employee>(s => s.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Leave with Employee relationship (1-N)
-            modelBuilder.Entity<Leave>()
-                .ToTable("Leaves")
-                .HasOne(l => l.Employees)
-                .WithMany(e => e.Leaves)
-                .HasForeignKey(l => l.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<DashboardCard>()
-                .HasKey(c => c.CardId);
 
             // Card with LeaveRequest relationship (1-N)
             modelBuilder.Entity<LeaveRequest>()
@@ -110,15 +113,14 @@ namespace AdminHRM.Server.DataContext
             modelBuilder.Entity<RequestInformUser>()
                 .HasOne(r => r.Employees)
                 .WithMany(e => e.InformRequests) // Một nhân viên có nhiều RequestInformUser
-                .HasForeignKey(r => r.EmployeeId) // Khóa ngoại liên kết với EmployeeId
-                .OnDelete(DeleteBehavior.Cascade); // Xóa RequestInformUser khi Employee bị xóa
+                .HasForeignKey(r => r.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RequestInformUser>()
                 .HasOne(r => r.LeaveRequest)
                 .WithMany(l => l.InformUsers) // Một LeaveRequest có nhiều RequestInformUser
                 .HasForeignKey(r => r.RequestId)
                 .OnDelete(DeleteBehavior.Cascade);
-
         }
 
 

@@ -6,17 +6,13 @@ using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Entities;
 using AdminHRM.Server.Infrastructures;
 using AdminHRM.Server.Services;
+using AdminHRM.Services.Implements;
 using AutoMapper;
 
 namespace AdminHRM.Services.Implements;
 
 public interface ILeaveServive
 {
-    Task<List<LeaveDto>> GetLeaveDtosAsync();
-    Task<bool> AddLeaveAsync(Dtos.Leaves.LeaveCreateDto leaveCreateDto);
-    Task<bool?> EditLeaveAsync(LeaveDto leaveDto);
-    Task<bool?> RemoveLeaveDtosAsync(Guid id);
-    Task<List<LeaveDto>> SearchLeaveDtosAsync(SearchLeaveDto searchLeaveDto);
     Task<List<LeaveDashboardCardDto>> GetDashboardCardsAsync();
     Task<bool> AddDashboardCardsAsync(LeaveDashboardCreateDto leaveDashboardCreateDto);
     Task<bool?> EditDashboardCardsAsync(LeaveDashboardCreateDto leaveDashboardCreateDto);
@@ -26,109 +22,41 @@ public interface ILeaveServive
     Task<bool?> EditRequestReasonAsync(LeaveReasonDto leaveReasonDto);
     Task<bool?> RemoveRequestReasonAsync(Guid id);
     Task<List<LeaveStatusDto>> GetRequestStatusAsync();
-    Task<bool> AddRequestStatusAsync(LeaveStatusDto leaveStatusDto);
+    Task<bool> AddRequestStatusAsync(LeaveStatusCreateDto leaveStatusCreaeteDto);
     Task<bool?> EditRequestStatusAsync(LeaveStatusDto leaveStatusDto);
-    Task<bool?> RemoveRequestStatusAsync(string statusId);
+    Task<bool?> RemoveRequestStatusAsync(Guid id);
+    Task<List<RequestTypeDto>> GetRequestTypesAsync();
+    Task<bool> AddRequestTypeAsync(RequestTypeCreateDto requestTypeCreateDto);
+    Task<bool?> EditRequestTypeAsync(RequestTypeDto requestTypeDto);
+    Task<bool?> RemoveRequestTypeAsync(Guid id);
 }
+
 
 public class LeaveService : ILeaveServive
 {
     private readonly ILogger<LeaveService> _logger;
     private readonly IMapper _mapper;
-    private readonly ILeaveRepository _leaveRepository;
     private readonly ILeaveDashboardCardRepository _leaveDashboardCardRepository;
     private readonly IRequestReasonRepository _requestReasonRepository;
     private readonly IRequestStatusRepository _requestStatusRepository;
+    private readonly IRequestTypeRepository _requestTypeRepository;
 
 
-    public LeaveService(ILeaveRepository leaveRepository, 
+    public LeaveService(
         ILogger<LeaveService> logger, 
         IMapper mapper, 
         ILeaveDashboardCardRepository leaveDashboardCardRepository, 
         IRequestReasonRepository requestReasonRepository,
-        IRequestStatusRepository requestStatusRepository)
+        IRequestStatusRepository requestStatusRepository,
+        IRequestTypeRepository requestTypeRepository)
     {
-        _leaveRepository = leaveRepository;
         _logger = logger;
         _mapper = mapper;
         _leaveDashboardCardRepository = leaveDashboardCardRepository;
         _requestReasonRepository = requestReasonRepository;
         _requestStatusRepository = requestStatusRepository;
+        _requestTypeRepository = requestTypeRepository;
     }
-    public async Task<List<LeaveDto>> GetLeaveDtosAsync()
-    {
-        try
-        {
-            var data = await _leaveRepository.GetOnlyLeaves();
-            return data;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            throw;
-        }
-    }
-    public async Task<bool> AddLeaveAsync(Dtos.Leaves.LeaveCreateDto leaveCreateDto)
-    {
-        try
-        {
-            var info = _mapper.Map<Leave>(leaveCreateDto);
-            return await _leaveRepository.AddAsync(info);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            throw;
-        }
-    }
-
-    public async Task<bool?> EditLeaveAsync(LeaveDto leaveDto)
-    {
-        try
-        {
-            var userInfo = await _leaveRepository.GetByIdAsync(leaveDto.Id);
-            if (userInfo == null)
-            {
-                return null;
-            }
-            var infoUpdate = _mapper.Map<Leave>(leaveDto);
-            var result = await _leaveRepository.UpdateAsync(infoUpdate);
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            throw;
-        }
-    }
-
-
-    public async Task<bool?> RemoveLeaveDtosAsync(Guid id)
-    {
-        try
-        {
-            return await _leaveRepository.DeleteByKey(id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            throw;
-        }
-    }
-
-    public async Task<List<LeaveDto>> SearchLeaveDtosAsync(SearchLeaveDto searchLeaveDto)
-    {
-        try
-        {
-            return await _leaveRepository.SearchLeaveDtosAsync(searchLeaveDto);
-        }
-        catch(Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            throw;
-        }
-    }
-
     public async Task<List<LeaveDashboardCardDto>> GetDashboardCardsAsync()
     {
         try
@@ -263,11 +191,11 @@ public class LeaveService : ILeaveServive
         }
     }
 
-    public async Task<bool> AddRequestStatusAsync(LeaveStatusDto leaveStatusDto)
+    public async Task<bool> AddRequestStatusAsync(LeaveStatusCreateDto leaveStatusCreateDto)
     {
         try
         {
-            var info = _mapper.Map<RequestStatus>(leaveStatusDto);
+            var info = _mapper.Map<RequestStatus>(leaveStatusCreateDto);
             return await _requestStatusRepository.AddAsync(info);
         }
         catch (Exception ex)
@@ -281,7 +209,7 @@ public class LeaveService : ILeaveServive
     {
         try
         {
-            var statusInfo = await _requestStatusRepository.GetByStatusIdAsync(leaveStatusDto.StatusId);
+            var statusInfo = await _requestStatusRepository.GetByIdAsync(leaveStatusDto.Id);
             if (statusInfo == null)
             {
                 return null;
@@ -297,11 +225,71 @@ public class LeaveService : ILeaveServive
         }
     }
 
-    public async Task<bool?> RemoveRequestStatusAsync(string statusId)
+    public async Task<bool?> RemoveRequestStatusAsync(Guid id)
     {
         try
         {
-            return await _requestStatusRepository.DeleteByStatusId(statusId);
+            return await _requestStatusRepository.DeleteByKey(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
+    }
+    public async Task<List<RequestTypeDto>> GetRequestTypesAsync()
+    {
+        try
+        {
+            var data = await _requestTypeRepository.GetAllAsync();
+            return _mapper.Map<List<RequestTypeDto>>(data);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<bool> AddRequestTypeAsync(RequestTypeCreateDto requestTypeCreateDto)
+    {
+        try
+        {
+            var info = _mapper.Map<RequestType>(requestTypeCreateDto);
+            return await _requestTypeRepository.AddAsync(info);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<bool?> EditRequestTypeAsync(RequestTypeDto requestTypeDto)
+    {
+        try
+        {
+            var typeInfo = await _requestTypeRepository.GetByIdAsync(requestTypeDto.Id);
+            if (typeInfo == null)
+            {
+                return null;
+            }
+            var typeUpdate = _mapper.Map<RequestType>(requestTypeDto);
+            var result = await _requestTypeRepository.UpdateAsync(typeUpdate);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<bool?> RemoveRequestTypeAsync(Guid id)
+    {
+        try
+        {
+            return await _requestTypeRepository.DeleteByKey(id);
         }
         catch (Exception ex)
         {

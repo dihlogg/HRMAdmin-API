@@ -8,8 +8,6 @@ namespace AdminHRM.Entities
     {
         [ForeignKey(nameof(Employee))]
         public Guid? EmployeeId { get; set; }
-
-        // Navigation property for employee
         public Employee? Employees { get; set; }
 
         [ForeignKey(nameof(LeaveRequest))]

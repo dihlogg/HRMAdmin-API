@@ -28,13 +28,6 @@ namespace AdminHRM.Server
             CreateMap<EmployeeDto, PagedResult>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
 
-            CreateMap<LeaveCreateDto, Leave>().ReverseMap()
-               .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
-            CreateMap<Leave, LeaveDto>().ReverseMap()
-                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
-            CreateMap<LeaveDto, Leave>().ReverseMap()
-                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
-
             CreateMap<LeaveDashboardCreateDto, DashboardCard>().ReverseMap()
                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
             CreateMap<DashboardCard, LeaveDashboardCardDto>().ReverseMap()
@@ -49,9 +42,18 @@ namespace AdminHRM.Server
             CreateMap<LeaveReasonDto, RequestReason>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
 
+            CreateMap<LeaveStatusCreateDto, RequestStatus>().ReverseMap()
+             .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
             CreateMap<RequestStatus, LeaveStatusDto>().ReverseMap()
                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
             CreateMap<LeaveStatusDto, RequestStatus>().ReverseMap()
+                .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+
+            CreateMap<RequestTypeCreateDto, RequestType>().ReverseMap()
+            .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+            CreateMap<RequestType, RequestTypeDto>().ReverseMap()
+               .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
+            CreateMap<RequestTypeDto, RequestType>().ReverseMap()
                 .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));
         }
     }

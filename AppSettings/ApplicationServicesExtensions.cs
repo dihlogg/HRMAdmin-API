@@ -16,11 +16,11 @@ public static class ApplicationServicesExtensions
         services.AddTransient<ISubUnitService, SubUnitService>();
         services.AddTransient<IEmployeeRepository, EmployeeRepository>();
         services.AddTransient<IEmployeeServive, EmployeeServive>();
-        services.AddTransient<ILeaveRepository, LeaveRepository>();
         services.AddTransient<ILeaveServive, LeaveService>();
         services.AddTransient<ILeaveDashboardCardRepository, LeaveDashboardCardRepository>();
         services.AddTransient<IRequestReasonRepository, RequestReasonRepository>();
         services.AddTransient<IRequestStatusRepository, RequestStatusRepository>();
+        services.AddTransient<IRequestTypeRepository, RequesttypeRepository>();
         //services.AddTransient<IAuthenticationService, AuthenticationService>();
     }
 }

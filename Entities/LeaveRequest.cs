@@ -6,8 +6,7 @@ namespace AdminHRM.Entities
 {
     public class LeaveRequest : BaseEntities
     {
-        public Guid LeaveId { get; set; }
-        public string RequestTypeId { get; set; }
+        public Guid RequestTypeId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? DetailReason { get; set; }

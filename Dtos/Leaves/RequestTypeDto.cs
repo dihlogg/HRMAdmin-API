@@ -1,12 +1,12 @@
 ﻿namespace AdminHRM.Dtos.Leaves
 {
-    public class LeaveStatusDto : LeaveStatusCreateDto
+    public class RequestTypeDto : RequestTypeCreateDto
     {
         public Guid Id { get; set; }
     }
-    public class LeaveStatusCreateDto
+    public class RequestTypeCreateDto
     {
-        public string? StatusName { get; set; }
+        public string? TypeName { get; set; }
         public int DisplayOrder { get; set; }
     }
 }
