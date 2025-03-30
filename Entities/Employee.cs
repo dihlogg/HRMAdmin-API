@@ -1,4 +1,6 @@
-﻿using AdminHRM.Server.Dtos;
+﻿using AdminHRM.Entities;
+using AdminHRM.Server.Dtos;
+using Microsoft.AspNetCore.Identity;
 
 namespace AdminHRM.Server.Entities
 {
@@ -9,9 +11,14 @@ namespace AdminHRM.Server.Entities
         public string JobTitle { get; set; }
         public string Status { get; set; }
         public Guid? EmployeeId { get; set; }
-        public Guid SubUnitId { get; set; }
-        public Employee SupperEmployee { get; set; }
-        public IList<Employee> Employees { get; set; }
-        public SubUnit SubUnits { get; set; }
+        public Guid? SubUnitId { get; set; }
+        public Employee? SupperEmployee { get; set; }
+        public IList<Employee>? Employees { get; set; }
+        public SubUnit? SubUnits { get; set; }
+        public string? UserId { get; set; }
+        public IdentityUser? User { get; set; }
+        public ICollection<LeaveRequest> ApprovedRequests { get; set; }
+        public ICollection<LeaveRequest> SuppervisedRequests { get; set; }
+        public ICollection<RequestInformUser> InformRequests { get; set; }
     }
 }

@@ -1,10 +1,17 @@
-﻿using AdminHRM.Server.Services;
-using AutoMapper;
+﻿using AutoMapper;
 using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Entities;
 using AdminHRM.Server.Infrastructures;
 
 namespace AdminHRM.Server.Services;
+
+public interface ISubUnitService
+{
+    Task<List<SubUnitDto>> GetSubUnitDtosAsync();
+    Task<bool> AddSubUnitAsync(SubUnitCreateDto subUnitCreateDto);
+    Task<bool?> EditSubUnitAsync(SubUnitDto subUnitDto);
+    Task<bool?> RemoveSubUnitDtosAsync(Guid id);
+}
 
 public class SubUnitService : ISubUnitService
 {
@@ -25,20 +32,6 @@ public class SubUnitService : ISubUnitService
         {
             var data = await _subUnitRepository.GetAllAsync();
             return _mapper.Map<List<SubUnitDto>>(data);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            throw;
-        }
-    }
-
-    public async Task<bool> AddSubUnitAsync(SubUnitCreateDto subUnitCreateDto)
-    {
-        try
-        {
-            var info = _mapper.Map<SubUnit>(subUnitCreateDto);
-            return await _subUnitRepository.AddAsync(info);
         }
         catch (Exception ex)
         {
@@ -72,6 +65,20 @@ public class SubUnitService : ISubUnitService
         try
         {
             return await _subUnitRepository.DeleteByKey(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<bool> AddSubUnitAsync(SubUnitCreateDto subUnitCreateDto)
+    {
+        try
+        {
+            var info = _mapper.Map<SubUnit>(subUnitCreateDto);
+            return await _subUnitRepository.AddAsync(info);
         }
         catch (Exception ex)
         {

@@ -1,11 +1,25 @@
-﻿using AdminHRM.Server.DataContext;
-using AdminHRM.Server.Dtos;
+﻿using AdminHRM.Dtos;
+using AdminHRM.Server.DataContext;
 using AdminHRM.Server.Entities;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using System.Linq.Dynamic.Core;
+using System.Data;
+using System.Linq;
+using System;
 
 namespace AdminHRM.Server.Infrastructures;
+
+public interface IEmployeeRepository : IGenericRepository<Employee>
+{
+    Task<List<EmployeeDto>> GetInCludeParentChild();
+    Task<int> CountAsync();
+    IQueryable<Employee> Query();
+    IQueryable<Employee> AsQueryable();
+    Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string[] sortFields, string[] sortOrders);
+    Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto);
+    Task<Employee?> GetEmployeeByIdAsync(Guid id);
+    Task<Employee?> GetEmployeeByUserIdAsync(string userId);
+}
 
 public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
 {
@@ -17,6 +31,7 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     {
         return await _hrmDbContext.Employees.CountAsync();
     }
+
     public async Task<List<EmployeeDto>> GetPagedAsync(int page, int pageSize, string[] sortFields, string[] sortOrders)
     {
         var query = _hrmDbContext.Employees.AsQueryable();
@@ -26,7 +41,8 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
             for (int i = 0; i < sortFields.Length; i++)
             {
                 var sortOrderString = sortOrders[i].ToUpper() == "DESC" ? "descending" : "ascending";
-                query = query.OrderBy($"{sortFields[i]} {sortOrderString}");
+                query = i == 0 ? query.OrderBy($"{sortFields[i]} {sortOrderString}")
+                               : ((IOrderedQueryable<Employee>)query).ThenBy($"{sortFields[i]} {sortOrderString}");
             }
         }
 
@@ -51,14 +67,16 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
                     FullName = p.FirstName + " " + p.LastName
                 }).ToList()
             }).ToListAsync();
-
     }
 
     public async Task<List<EmployeeDto>> GetInCludeParentChild()
     {
         var query = _hrmDbContext.Employees
-            .AsQueryable()
-            .AsNoTracking();
+        .Include(e => e.SupperEmployee)
+        .Include(e => e.Employees)
+        .Include(e => e.SubUnits)
+        .AsNoTracking();
+
         return await query
             .Select(s => new EmployeeDto()
             {
@@ -67,57 +85,54 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
                 FirstName = s.FirstName,
                 JobTitle = s.JobTitle,
                 Status = s.Status,
+                UserName = s.User.UserName,
+                Email = s.User.Email,
                 SubUnitId = s.SubUnitId,
-                SubUnitName = s.SubUnits.SubName,
-                SupperVisor = new EmployeeParentChildDto()
+                SubUnitName = s.SubUnits != null ? s.SubUnits.SubName : null,
+                SupperVisor = s.SupperEmployee != null ? new EmployeeParentChildDto()
                 {
                     Id = s.SupperEmployee.Id,
                     FullName = s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName
-                },
-                EmployeeChildrens = s.Employees.Select(p => new EmployeeParentChildDto()
+                } : null,
+                EmployeeChildrens = s.Employees != null ? s.Employees.Select(p => new EmployeeParentChildDto()
                 {
-                    Id =p.Id,
+                    Id = p.Id,
                     FullName = p.FirstName + " " + p.LastName
-                })
+                }).ToList() : new List<EmployeeParentChildDto>(),
             })
             .ToListAsync();
     }
 
-    public async Task<List<EmployeeDto>> SearchEmployeeDtosAsync(
-        string? employeeName = null,
-        string? status = null,
-        string? jobTitle = null,
-        string? supervisorName = null,
-        string? subName = null)
+    public async Task<List<EmployeeDto>> SearchEmployeeDtosAsync(SearchEmployeeDto searchEmployeeDto)
     {
         var query = _hrmDbContext.Employees
         .Include(e => e.SubUnits)
         .Include(e => e.SupperEmployee)
         .AsQueryable();
 
-        if (!string.IsNullOrEmpty(employeeName))
+        if (!string.IsNullOrEmpty(searchEmployeeDto.EmployeeName))
         {
-            query = query.Where(s => (s.FirstName + " " + s.LastName).Contains(employeeName));
+            query = query.Where(s => (s.FirstName + " " + s.LastName).Contains(searchEmployeeDto.EmployeeName));
         }
 
-        if (!string.IsNullOrEmpty(status))
+        if (!string.IsNullOrEmpty(searchEmployeeDto.Status))
         {
-            query = query.Where(s => s.Status == status);
+            query = query.Where(s => s.Status == searchEmployeeDto.Status);
         }
 
-        if (!string.IsNullOrEmpty(jobTitle))
+        if (!string.IsNullOrEmpty(searchEmployeeDto.JobTitle))
         {
-            query = query.Where(s => s.JobTitle == jobTitle);
+            query = query.Where(s => s.JobTitle == searchEmployeeDto.JobTitle);
         }
 
-        if (!string.IsNullOrEmpty(supervisorName))
+        if (!string.IsNullOrEmpty(searchEmployeeDto.SupervisorName))
         {
-            query = query.Where(s => (s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName).Contains(supervisorName));
+            query = query.Where(s => (s.SupperEmployee.FirstName + " " + s.SupperEmployee.LastName).Contains(searchEmployeeDto.SupervisorName));
         }
 
-        if (!string.IsNullOrEmpty(subName))
+        if (!string.IsNullOrEmpty(searchEmployeeDto.SubName))
         {
-            query = query.Where(s => s.SubUnits.SubName.Contains(subName));
+            query = query.Where(s => s.SubUnits.SubName.Contains(searchEmployeeDto.SubName));
         }
 
         return await query
@@ -152,5 +167,17 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     public IQueryable<Employee> AsQueryable()
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Employee?> GetEmployeeByIdAsync(Guid id)
+    {
+        return await _hrmDbContext.Employees.FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    public async Task<Employee?> GetEmployeeByUserIdAsync(string userId)
+    {
+        return await _hrmDbContext.Employees
+            .Include(e => e.User)
+            .FirstOrDefaultAsync(e => e.UserId == userId);
     }
 }

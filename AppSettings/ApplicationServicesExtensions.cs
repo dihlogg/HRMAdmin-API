@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using AdminHRM.Server.Infrastructures;
 using AdminHRM.Server.Services;
+using AdminHRM.Infrastructures.Repositories;
+using AdminHRM.Services.Implements;
 
 namespace AdminHRM.Server.AppSettings;
 
@@ -14,5 +16,11 @@ public static class ApplicationServicesExtensions
         services.AddTransient<ISubUnitService, SubUnitService>();
         services.AddTransient<IEmployeeRepository, EmployeeRepository>();
         services.AddTransient<IEmployeeServive, EmployeeServive>();
+        services.AddTransient<ILeaveServive, LeaveService>();
+        services.AddTransient<ILeaveDashboardCardRepository, LeaveDashboardCardRepository>();
+        services.AddTransient<IRequestReasonRepository, RequestReasonRepository>();
+        services.AddTransient<IRequestStatusRepository, RequestStatusRepository>();
+        services.AddTransient<IRequestTypeRepository, RequesttypeRepository>();
+        //services.AddTransient<IAuthenticationService, AuthenticationService>();
     }
 }

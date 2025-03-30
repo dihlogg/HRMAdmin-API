@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AdminHRM.Server.Dtos;
 using AdminHRM.Server.Services;
+using AdminHRM.Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdminHRM.Server.Controllers
 {
@@ -83,17 +84,43 @@ namespace AdminHRM.Server.Controllers
             }
         }
 
+        [HttpGet("GetEmployeeById/{id}")]
+        public async Task<IActionResult> GetEmployeeById(Guid id)
+        {
+            var employee = await _employeeService.GetEmployeeByIdAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            return Ok(employee);
+        }
+
+        [HttpGet("GetEmployeeByUserId/{userId}")]
+        public async Task<ActionResult<EmployeeDto>> GetEmployeeByUserId(string userId)
+        {
+            var employee = await _employeeService.GetEmployeeByUserIdAsync(userId);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(employee);
+        }
+
         [HttpGet("SearchEmployees")]
-        public async Task<IActionResult> SearchEmployees(
-           string? employeeName = null,
-           string? status = null,
-           string? jobTitle = null,
-           string? supervisorName = null,
-           string? subName = null)
+        public async Task<IActionResult> SearchEmployees([FromQuery] string? employeeName, [FromQuery] string? jobTitle, [FromQuery] string? status)
         {
             try
             {
-                var data = await _employeeService.SearchEmployeeDtosAsync(employeeName, supervisorName, status, jobTitle, subName);
+                var searchEmployeeDto = new SearchEmployeeDto
+                {
+                    EmployeeName = employeeName,
+                    JobTitle = jobTitle,
+                    Status = status
+                };
+
+                var data = await _employeeService.SearchEmployeeDtosAsync(searchEmployeeDto);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -103,17 +130,25 @@ namespace AdminHRM.Server.Controllers
         }
 
         [HttpGet("GetPagingRecord")]
-        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees([FromQuery] int page,
+        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetPagedEmployees(
+            [FromQuery] int page,
             [FromQuery] int pageSize,
-            [FromQuery] string sortFields,
-            [FromQuery] string sortOrders)
+            [FromQuery] string? sortFields,
+            [FromQuery] string? sortOrders)
         {
-            var sortFieldArray = sortFields.Split(',');
-            var sortOrderArray = sortOrders.Split(',');
+            string[] sortFieldArray = [], sortOrderArray = [];
+            if (!string.IsNullOrEmpty(sortFields))
+            {
+                sortFieldArray = sortFields.Split(',');
+            }
+            if (!string.IsNullOrEmpty(sortOrders))
+            {
+                sortOrderArray = sortOrders.Split(',');
+            }
 
             if (sortFieldArray.Length != sortOrderArray.Length)
             {
-                return BadRequest();
+                return BadRequest("The number of sort fields must match the number of sort orders");
             }
 
             var result = await _employeeService.GetPagedEmployeesAsync(page, pageSize, sortFieldArray, sortOrderArray);
